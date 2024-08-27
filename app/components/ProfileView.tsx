@@ -1,17 +1,28 @@
 'use client';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import MixedGrid from './MixedGrid';
 import ProfileEventCollection from './ProfileEventCollection';
 import { useAuth } from '../context/AuthContext';
 
-const ProfileView = (userData) => {
+const ProfileView = ({ userData }: { userData: any }) => {
   const { user } = useAuth();
-  const collectionData = userData.userData
-  const [collection, setCollection] = useState({ collectionData });
-
   const router = useRouter();
+
+  const [collection, setCollection] = useState({
+    events: userData?.events || [],
+    issues: userData?.issues || [],
+  });
+
+  useEffect(() => {
+    if (userData) {
+      setCollection({
+        events: userData.events || [],
+        issues: userData.issues || [],
+      });
+    }
+  }, [userData]);
 
   const deleteEvent = async (eventId: string) => {
     try {
@@ -23,7 +34,7 @@ const ProfileView = (userData) => {
       });
 
       if (response.ok) {
-        setCollection((prevCollection: any) => ({
+        setCollection((prevCollection) => ({
           ...prevCollection,
           events: prevCollection.events.filter((event: any) => event._id !== eventId),
         }));
@@ -43,7 +54,7 @@ const ProfileView = (userData) => {
       });
 
       if (response.ok) {
-        setCollection((prevCollection: any) => ({
+        setCollection((prevCollection) => ({
           ...prevCollection,
           issues: prevCollection.issues.filter((issue: any) => issue._id !== issueId),
         }));
@@ -64,7 +75,7 @@ const ProfileView = (userData) => {
 
       if (response.ok) {
         const updatedStatus = await response.json();
-        setCollection((prevCollection: any) => ({
+        setCollection((prevCollection) => ({
           ...prevCollection,
           issues: prevCollection.issues.map((issue: any) =>
             issue._id === issueId ? { ...issue, readStatus: updatedStatus.isRead } : issue
@@ -92,7 +103,7 @@ const ProfileView = (userData) => {
         <h5 className="text-2xl mt-4">Welcome to your profile page, {user.username}!</h5>
         <button
           className="mt-4 bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-700"
-          onClick={() => router.push(`/user/edit`)}
+          onClick={() => router.push(`/profile/edit`)}
         >
           Edit your profile
         </button>
@@ -104,11 +115,11 @@ const ProfileView = (userData) => {
         </strong>
       </p>
       <ProfileEventCollection
-        collection={collection.collectionData}
+        collection={collection}
         deleteEvent={deleteEvent}
         toggleReadStatus={toggleReadStatus}
       />
-      {!userData.userData.events.length && (
+      {!collection.events.length && (
         <p className="text-center mt-8">
           <strong>No events to show. Visit the events page to start collecting!</strong>
         </p>

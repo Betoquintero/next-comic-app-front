@@ -28,8 +28,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/${eventId}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // Adjust to your auth method
+          Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
         },
       });
 
@@ -37,7 +36,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
         throw new Error('Failed to add event to collection');
       }
 
-      alert('Event added to your collection successfully!');
     } catch (error) {
       console.error(error);
       alert('Failed to add event to collection');

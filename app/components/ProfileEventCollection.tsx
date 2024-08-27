@@ -31,6 +31,8 @@ const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
   deleteEvent,
   toggleReadStatus,
 }) => {
+
+  console.log('collectioninfo', collection )
   return (
     <div className="cardsContainer">
       {collection?.events.map((event) => (

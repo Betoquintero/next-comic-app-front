@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { AuthProvider } from './context/AuthContext'
+import Navbar from '../app/components/NavBar' // Import the Navbar component
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -13,9 +14,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body className={inter.className}>
         <AuthProvider>
-          {children}
+          <Navbar /> 
+          <div className="pt-16"> {/* Padding added to prevent content from being hidden behind the navbar */}
+            {children}
+          </div>
         </AuthProvider>
       </body>
     </html>
