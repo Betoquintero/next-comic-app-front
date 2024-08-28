@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../context/AuthContext';
 
 interface Issue {
   _id: string;
@@ -18,12 +20,14 @@ interface EventDetailsProps {
 }
 
 const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, eventId }) => {
+  const { isAuthenticated, user } = useAuth(); // Access auth context
   const [isAdding, setIsAdding] = useState(false);
+  const router = useRouter();
 
   const handleAddToCollection = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsAdding(true);
-
+  
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/${eventId}`, {
         method: 'POST',
@@ -31,11 +35,13 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
           Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
         },
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to add event to collection');
       }
-
+  
+      // Refetch the user data after adding the event
+      router.push(`/profile/${user._id}`);
     } catch (error) {
       console.error(error);
       alert('Failed to add event to collection');
@@ -43,6 +49,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
       setIsAdding(false);
     }
   };
+  
 
   return (
     <>
@@ -56,17 +63,19 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
         />
       </div>
 
-      <form onSubmit={handleAddToCollection} className="text-center mb-10">
-        <button
-          type="submit"
-          className={`${
-            universe === 'DC' ? 'bg-blue-600' : 'bg-red-600'
-          } text-white py-2 px-4 rounded-lg hover:bg-opacity-80 transition duration-300`}
-          disabled={isAdding}
-        >
-          {isAdding ? 'Adding...' : 'Add Event to My Collection'}
-        </button>
-      </form>
+      {isAuthenticated && (
+        <form onSubmit={handleAddToCollection} className="text-center mb-10">
+          <button
+            type="submit"
+            className={`${
+              universe === 'DC' ? 'bg-blue-600' : 'bg-red-600'
+            } text-white py-2 px-4 rounded-lg hover:bg-opacity-80 transition duration-300`}
+            disabled={isAdding}
+          >
+            {isAdding ? 'Adding...' : 'Add Event to My Collection'}
+          </button>
+        </form>
+      )}
 
       <div className="text-center mt-10 text-2xl font-bold text-gray-800">
         <strong>Comics that belong to this event</strong>

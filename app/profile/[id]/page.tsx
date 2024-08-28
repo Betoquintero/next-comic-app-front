@@ -4,7 +4,6 @@ import { cookies } from 'next/headers';
 
 
 interface ProfileProps {
-  userId: string;
   userData: any; // Define this according to your user data structure
 }
 
@@ -19,5 +18,5 @@ export default async function ProfilePage({ params }: { params: { id: string } }
     return <p>Profile not found</p>;
   }
 
-  return <ProfileView userId={id} userData={userData} />;
+  return <ProfileView userData={userData} />;
 }

@@ -3,36 +3,23 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-
-interface Issue {
-  _id: string;
-  name: string;
-  image: string;
-  readStatus: boolean;
-}
-
-interface Event {
-  _id: string;
-  name: string;
-  image: string;
-  issues: Issue[];
-}
+import type { Event, Issue } from './ProfileView'
 
 interface ProfileEventCollectionProps {
   collection: {
     events: Event[];
+    issues: Issue[]
   };
-  deleteEvent: (eventId: string) => void;
+  deleteEventFromCollection: (eventId: string) => void;
   toggleReadStatus: (issueId: string) => void;
 }
 
 const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
   collection,
-  deleteEvent,
+  deleteEventFromCollection,
   toggleReadStatus,
 }) => {
 
-  console.log('collectioninfo', collection )
   return (
     <div className="cardsContainer">
       {collection?.events.map((event) => (
@@ -58,8 +45,8 @@ const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
             </div>
             <div className="deleteCollectionContainer mt-4 text-center">
               <button
-                className="deleteEventCollection bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-red-700"
-                onClick={() => deleteEvent(event._id)}
+                className="deleteEventFromCollectionCollection bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-red-700"
+                onClick={() => deleteEventFromCollection(event._id)}
               >
                 Delete event
               </button>
@@ -87,7 +74,7 @@ const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
                   </Link>
                 </div>
                 <button
-                  className="deleteEventCollection mt-2 bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-700 w-full"
+                  className="deleteEventFromCollectionCollection mt-2 bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-700 w-full"
                   onClick={() => toggleReadStatus(issue._id)}
                 >
                   {issue.readStatus ? 'Mark as Unread' : 'Mark as Read'}

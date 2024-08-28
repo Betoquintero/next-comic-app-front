@@ -61,42 +61,6 @@ export async function getPartsByUniverse(universe: string) {
       return null;
     }
   }
-
-  export async function fetchUserCollections(token: string) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch collections');
-    }
-    return response.json();
-  }
-  
-  export async function deleteEventFromCollection(eventId: string, token: string) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/delete-event/${eventId}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to delete event');
-    }
-  }
-  
-  export async function deleteIssueFromCollection(issueId: string, token: string) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/delete-issue/${issueId}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to delete issue');
-    }
-  }
   
   export async function toggleIssueReadStatus(issueId: string, token: string) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/readStatuses/toggle-read/${issueId}`, {

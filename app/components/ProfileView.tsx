@@ -1,4 +1,5 @@
 'use client';
+
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -6,7 +7,34 @@ import MixedGrid from './MixedGrid';
 import ProfileEventCollection from './ProfileEventCollection';
 import { useAuth } from '../context/AuthContext';
 
-const ProfileView = ({ userData }: { userData: any }) => {
+export interface Event {
+  _id: string;
+  universe: string;
+  name: string;
+  order: string;
+  years: string;
+  image: string;
+  issues: Issue[];  // Assuming events have a collection of issues
+}
+
+export interface Issue {
+  _id: string;
+  name: string;
+  image: string;
+  readStatus: boolean;
+}
+
+interface UserData {
+  _id: string;
+  userId: string;
+  events: Event[];
+  issues: Issue[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
   const { user } = useAuth();
   const router = useRouter();
 
@@ -24,7 +52,7 @@ const ProfileView = ({ userData }: { userData: any }) => {
     }
   }, [userData]);
 
-  const deleteEvent = async (eventId: string) => {
+  const deleteEventFromCollection = async (eventId: string) => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/delete-event/${eventId}`, {
         method: 'DELETE',
@@ -36,7 +64,7 @@ const ProfileView = ({ userData }: { userData: any }) => {
       if (response.ok) {
         setCollection((prevCollection) => ({
           ...prevCollection,
-          events: prevCollection.events.filter((event: any) => event._id !== eventId),
+          events: prevCollection.events.filter((event) => event._id !== eventId),
         }));
       }
     } catch (error) {
@@ -56,7 +84,7 @@ const ProfileView = ({ userData }: { userData: any }) => {
       if (response.ok) {
         setCollection((prevCollection) => ({
           ...prevCollection,
-          issues: prevCollection.issues.filter((issue: any) => issue._id !== issueId),
+          issues: prevCollection.issues.filter((issue) => issue._id !== issueId),
         }));
       }
     } catch (error) {
@@ -77,7 +105,7 @@ const ProfileView = ({ userData }: { userData: any }) => {
         const updatedStatus = await response.json();
         setCollection((prevCollection) => ({
           ...prevCollection,
-          issues: prevCollection.issues.map((issue: any) =>
+          issues: prevCollection.issues.map((issue) =>
             issue._id === issueId ? { ...issue, readStatus: updatedStatus.isRead } : issue
           ),
         }));
@@ -100,7 +128,7 @@ const ProfileView = ({ userData }: { userData: any }) => {
             objectFit="cover"
           />
         </div>
-        <h5 className="text-2xl mt-4">Welcome to your profile page, {user.username}!</h5>
+        <h5 className="text-2xl mt-4 text-gray-800">Welcome to your profile page, {user.username}!</h5>
         <button
           className="mt-4 bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-700"
           onClick={() => router.push(`/profile/edit`)}
@@ -108,7 +136,7 @@ const ProfileView = ({ userData }: { userData: any }) => {
           Edit your profile
         </button>
       </div>
-      <p className="mt-8 text-center">
+      <p className="mt-8 text-center text-gray-800">
         <strong>
           Below you will find your saved collections. If you do not have any, visit the events and collections pages to find
           the ones you like the most!
@@ -116,11 +144,11 @@ const ProfileView = ({ userData }: { userData: any }) => {
       </p>
       <ProfileEventCollection
         collection={collection}
-        deleteEvent={deleteEvent}
+        deleteEventFromCollection={deleteEventFromCollection}
         toggleReadStatus={toggleReadStatus}
       />
       {!collection.events.length && (
-        <p className="text-center mt-8">
+        <p className="text-center mt-8 text-gray-800">
           <strong>No events to show. Visit the events page to start collecting!</strong>
         </p>
       )}
