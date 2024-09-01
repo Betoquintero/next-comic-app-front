@@ -25,8 +25,7 @@ export async function getPartsByUniverse(universe: string) {
       const data = await response.json();
       return data.data;
     } catch (error) {
-      console.error('Error fetching part details:', error);
-      return null;
+      throw new Error('Failed to fetch part details');
     }
   }
 
@@ -41,8 +40,7 @@ export async function getPartsByUniverse(universe: string) {
       const data = await response.json();
       return data.data;
     } catch (error) {
-      console.error('Error fetching event details:', error);
-      return null;
+      throw new Error('Failed to fetch event details');
     }
   }
 
@@ -57,8 +55,7 @@ export async function getPartsByUniverse(universe: string) {
       const data = await response.json();
       return data.data;
     } catch (error) {
-      console.error('Error fetching issue details:', error);
-      return null;
+      throw new Error('Failed to fetch issue details');
     }
   }
   

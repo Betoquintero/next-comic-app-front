@@ -23,7 +23,6 @@ const LoginPage = () => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log('data', data);
 
       // Pass the token to authenticateUser to store it in the context and cookies
       authenticateUser(data.authToken);
