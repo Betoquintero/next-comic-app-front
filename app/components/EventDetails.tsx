@@ -1,10 +1,11 @@
-'use client';
-
+'use client'
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Issue {
   _id: string;
@@ -39,17 +40,35 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
       if (!response.ok) {
         throw new Error('Failed to add event to collection');
       }
-  
-      // Refetch the user data after adding the event
-      router.push(`/profile/${user._id}`);
+
+      const responseData = await response.json();
+
+      if (responseData.message) {
+        // Show toast notification with the message from the server
+        toast.info(responseData.message, {
+          position: "bottom-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+        });
+      } else {
+        // Show success toast notification
+        toast.success('Successfully added event to collection', {
+          position: "bottom-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+        });
+      }
     } catch (error) {
       console.error(error);
-      alert('Failed to add event to collection');
+      toast.error('Failed to add event to collection', {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+      });
     } finally {
       setIsAdding(false);
     }
   };
-  
 
   return (
     <>
@@ -101,6 +120,8 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
           </div>
         ))}
       </div>
+
+      <ToastContainer />
     </>
   );
 };

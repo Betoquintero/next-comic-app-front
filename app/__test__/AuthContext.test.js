@@ -16,6 +16,7 @@ const MockComponent = () => {
   React.useEffect(() => {
     // Trigger the hook here or based on an event
     authenticateUser('newFakeToken');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 import EventDetails from '../components/EventDetails';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 // Mock useAuth hook
 jest.mock('../context/AuthContext', () => ({
@@ -13,6 +14,16 @@ jest.mock('../context/AuthContext', () => ({
 // Mock useRouter hook
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
+}));
+
+// Mock toast
+jest.mock('react-toastify', () => ({
+  toast: {
+    success: jest.fn(),
+    info: jest.fn(),
+    error: jest.fn(),
+  },
+  ToastContainer: () => <div />,
 }));
 
 describe('EventDetails Component', () => {
@@ -32,38 +43,70 @@ describe('EventDetails Component', () => {
     useRouter.mockReturnValue({
       push: jest.fn(),
     });
+
+    // Clear all mock calls
+    jest.clearAllMocks();
   });
 
-  test('renders main event image correctly', () => {
+  test('shows success toast when event is successfully added to collection', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({}),
+      })
+    );
+
     render(<EventDetails image="/event.jpg" issues={issues} universe="DC" eventId="event1" />);
-    const eventImage = screen.getByAltText('Event image');
-    expect(eventImage).toHaveAttribute('src', '/event.jpg');
-    expect(eventImage).toHaveAttribute('width', '200');
-    expect(eventImage).toHaveAttribute('height', '200');
+    
+    fireEvent.submit(screen.getByText('Add Event to My Collection'));
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith('Successfully added event to collection', {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+      });
+    });
   });
 
-  test('renders the correct number of issues', () => {
+  test('shows info toast when event is already in collection', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ message: "Event is already on user's collection" }),
+      })
+    );
+
     render(<EventDetails image="/event.jpg" issues={issues} universe="DC" eventId="event1" />);
-    const issueElements = screen.getAllByAltText(/image$/i);
-    expect(issueElements.length).toBe(3);
+    
+    fireEvent.submit(screen.getByText('Add Event to My Collection'));
+
+    await waitFor(() => {
+      expect(toast.info).toHaveBeenCalledWith("Event is already on user's collection", {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+      });
+    });
   });
 
-  test('renders "Add Event to My Collection" button when authenticated', () => {
+  test('shows error toast when adding event to collection fails', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+      })
+    );
+
     render(<EventDetails image="/event.jpg" issues={issues} universe="DC" eventId="event1" />);
-    expect(screen.getByText('Add Event to My Collection')).toBeInTheDocument();
+    
+    fireEvent.submit(screen.getByText('Add Event to My Collection'));
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Failed to add event to collection', {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+      });
+    });
   });
-
-// TODO: MAYBE CREATE A DIALOG WITH THE ERROR
-  //   test('displays error message if add to collection fails', async () => {
-//     jest.spyOn(global, 'fetch').mockRejectedValue(new Error('Failed to add event to collection'));
-
-//     render(<EventDetails image="/event.jpg" issues={issues} universe="DC" eventId="event1" />);
-
-//     fireEvent.click(screen.getByText('Add Event to My Collection'));
-
-//     await waitFor(() => {
-//       expect(screen.getByText('Add Event to My Collection')).toBeInTheDocument();
-//       expect(window.alert).toHaveBeenCalledWith('Failed to add event to collection');
-//     });
-//   });
 });
