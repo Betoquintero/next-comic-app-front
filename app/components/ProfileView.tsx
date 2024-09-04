@@ -14,7 +14,7 @@ export interface Event {
   order: string;
   years: string;
   image: string;
-  issues: Issue[];  // Assuming events have a collection of issues
+  issues: Issue[];
 }
 
 export interface Issue {
@@ -45,12 +45,54 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
 
   useEffect(() => {
     if (userData) {
-      setCollection({
-        events: userData.events || [],
-        issues: userData.issues || [],
-      });
+      fetchReadStatuses();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
+
+  const fetchReadStatuses = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/readStatuses`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
+        },
+      });
+
+      if (response.ok) {
+        const readStatuses = await response.json();
+
+        collection.events.forEach(event => {
+            event.issues.forEach(issue => {
+            });
+        });
+
+        const updatedEvents = collection.events.map((event) => ({
+          ...event,
+          issues: event.issues.map((issue) => {
+            const readStatus = readStatuses.find(
+              (status: { issueId: { _id: string; } }) => {
+                const isMatch = status.issueId._id === issue._id;
+                return isMatch;
+              }
+            );
+            return { ...issue, readStatus: readStatus ? readStatus.isRead : false };
+          }),
+        }));
+
+        setCollection((prevCollection) => ({
+          ...prevCollection,
+          events: updatedEvents,
+        }));
+      } else {
+        console.error('Failed to fetch read statuses');
+      }
+    } catch (error) {
+      console.error('Error fetching read statuses:', error);
+    }
+  };
+
+
 
   const deleteEventFromCollection = async (eventId: string) => {
     try {
@@ -72,48 +114,36 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
     }
   };
 
-  const deleteIssue = async (issueId: string) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/delete-issue/${issueId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
-        },
-      });
-
-      if (response.ok) {
-        setCollection((prevCollection) => ({
-          ...prevCollection,
-          issues: prevCollection.issues.filter((issue) => issue._id !== issueId),
-        }));
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const toggleReadStatus = async (issueId: string) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/readStatuses/toggle-read/${issueId}`, {
-        method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
-        },
-      });
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/readStatuses/toggle-read/${issueId}`, {
+            method: 'PATCH',
+            headers: {
+                Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
+            },
+        });
 
-      if (response.ok) {
-        const updatedStatus = await response.json();
-        setCollection((prevCollection) => ({
-          ...prevCollection,
-          issues: prevCollection.issues.map((issue) =>
-            issue._id === issueId ? { ...issue, readStatus: updatedStatus.isRead } : issue
-          ),
-        }));
-      }
+        if (response.ok) {
+            const updatedStatus = await response.json();
+
+            const updatedEvents = collection.events.map((event) => ({
+                ...event,
+                issues: event.issues.map((issue) =>
+                    issue._id === issueId ? { ...issue, readStatus: updatedStatus.isRead } : issue
+                ),
+            }));
+
+            setCollection((prevCollection) => ({
+              ...prevCollection,
+              events: updatedEvents,
+            }));
+        } else {
+            console.error('Failed to toggle read status');
+        }
     } catch (error) {
-      console.error(error);
+        console.error('Error toggling read status:', error);
     }
-  };
+};
 
   return (
     <MixedGrid>

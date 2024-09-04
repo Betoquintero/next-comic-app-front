@@ -3,12 +3,12 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import type { Event, Issue } from './ProfileView'
+import type { Event, Issue } from './ProfileView';
 
 interface ProfileEventCollectionProps {
   collection: {
     events: Event[];
-    issues: Issue[]
+    issues: Issue[];
   };
   deleteEventFromCollection: (eventId: string) => void;
   toggleReadStatus: (issueId: string) => void;
@@ -19,11 +19,13 @@ const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
   deleteEventFromCollection,
   toggleReadStatus,
 }) => {
-
   return (
     <div className="cardsContainer">
       {collection?.events.map((event) => (
-        <div key={event._id} className="eventIssue flex flex-wrap p-4 border rounded-lg shadow-lg bg-gray-100 mb-6">
+        <div
+          key={event._id}
+          className="eventIssue flex flex-wrap p-4 border rounded-lg shadow-lg bg-gray-100 mb-6"
+        >
           <div className="eventProfileContainer w-full lg:w-1/4">
             <div className="collectionAndEventsProfileTitle text-center mb-4">
               <strong>Event</strong>
@@ -35,8 +37,7 @@ const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
                   alt={event.name}
                   width={200}
                   height={200}
-                  className="rounded-t-lg"
-                  objectFit="cover"
+                  className="rounded-t-lg object-cover"
                 />
                 <div className="p-4 text-center">
                   <h4 className="text-gray-800 font-semibold">{event.name}</h4>
@@ -57,19 +58,25 @@ const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
               <strong>Collection of issues</strong>
             </div>
             {event.issues.map((issue) => (
-              <div key={issue._id} className="readmarkerAndIssue w-1/2 md:w-1/3 lg:w-1/4 p-2">
-                <div className={`card bg-white rounded-lg shadow-lg ${issue.readStatus ? 'opacity-50' : ''}`}>
+              <div
+                key={issue._id}
+                className="readmarkerAndIssue w-1/2 md:w-1/3 lg:w-1/4 p-2"
+              >
+                <div className="card bg-white rounded-lg shadow-lg">
                   <Link href={`/issues/${issue._id}`} className="block">
                     <Image
                       src={issue.image}
                       alt={issue.name}
                       width={200}
                       height={200}
-                      className="rounded-t-lg"
-                      objectFit="cover"
+                      className={`rounded-t-lg object-cover ${
+                        issue.readStatus ? 'opacity-50' : 'opacity-100'
+                      }`}
                     />
                     <div className="p-4 text-center">
-                      <h4 className="text-gray-800 font-semibold">{issue.name}</h4>
+                      <h4 className="text-gray-800 font-semibold">
+                        {issue.name}
+                      </h4>
                     </div>
                   </Link>
                 </div>
