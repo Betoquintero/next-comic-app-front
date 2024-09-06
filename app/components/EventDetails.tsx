@@ -57,6 +57,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
           autoClose: 3000,
           hideProgressBar: true,
         });
+        router.refresh()
       }
     } catch (error) {
       console.error(error);
@@ -71,8 +72,8 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
   };
 
   return (
-    <>
-      <div className="mb-10">
+    <div className="flex flex-col items-center min-h-screen p-4">
+      <div className="flex flex-col items-center mb-10">
         <Image
           src={image}
           alt="Event image"
@@ -100,29 +101,35 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
         <strong>Comics that belong to this event</strong>
       </div>
 
-      <div className="flex flex-wrap justify-around mt-6">
-        {issues.map((issue) => (
-          <div key={issue._id} className="bg-light-grey rounded-lg shadow-md transition-shadow duration-300 hover:shadow-lg m-4 w-[250px]">
-            <Link href={`/issues/${issue._id}`} className="block no-underline text-black">
-              <Image
-                src={issue.image}
-                alt={`${issue.name} image`}
-                width={250}
-                height={250}
-                className="rounded-t-lg"
-              />
-              <div className="text-center p-4">
-                <h4 className="text-sm font-semibold">
-                  {issue.name}
-                </h4>
-              </div>
-            </Link>
+      <div className="flex flex-wrap justify-center mt-6">
+        {issues.length > 0 ? (
+          issues.map((issue) => (
+            <div key={issue._id} className="bg-light-grey rounded-lg shadow-md transition-shadow duration-300 hover:shadow-lg m-4 w-[150px]">
+              <Link href={`/issues/${issue._id}`} className="block no-underline text-black">
+                <Image
+                  src={issue.image}
+                  alt={`${issue.name} image`}
+                  width={150}
+                  height={150}
+                  className="rounded-t-lg"
+                />
+                <div className="text-center p-4">
+                  <h4 className="text-sm font-semibold">
+                    {issue.name}
+                  </h4>
+                </div>
+              </Link>
+            </div>
+          ))
+        ) : (
+          <div className="flex items-center justify-center w-full h-48 bg-gray-200 rounded-lg">
+            <p className="text-gray-600">No issues available</p>
           </div>
-        ))}
+        )}
       </div>
 
       <ToastContainer />
-    </>
+    </div>
   );
 };
 

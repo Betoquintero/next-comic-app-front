@@ -20,7 +20,7 @@ export default async function PartDetailsPage({ params }: PartDetailsPageProps) 
 
   return (
     <CustomGrid universe={universe}>
-      <div className="bg-gray-100 rounded-xl p-6 mb-6 shadow-lg">
+      <div className="bg-gray-100 rounded-xl p-4 mb-6 shadow-lg">
         <h3 className="text-2xl font-bold text-gray-800">{part.name}</h3>
         <p className="mt-4 text-lg text-gray-700">
           <strong>Year published:</strong> {part.years}

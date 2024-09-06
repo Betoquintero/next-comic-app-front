@@ -14,7 +14,6 @@ export default async function ProfilePage({ params }: { params: { id: string } }
   const userData = await fetchProfileData(id, token);
 
   if (!userData) {
-    // Handle the case where user data is not found
     return <p>Profile not found</p>;
   }
 

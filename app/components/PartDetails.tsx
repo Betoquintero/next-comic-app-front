@@ -19,17 +19,15 @@ const PartDetails: React.FC<PartDetailsProps> = ({ events, universe }) => {
   return (
     <div className="flex flex-wrap justify-around w-full">
       {events.map((event) => (
-        <div key={event._id} className="bg-light-grey rounded-lg shadow-md transition-shadow duration-300 hover:shadow-lg m-4 w-[250px]">
+        <div key={event._id} className="bg-light-grey rounded-lg shadow-md transition-shadow duration-300 hover:shadow-lg m-4 w-[150px]">
           <Link href={`/events/${event._id}`} className="block no-underline text-black">
-            <div className="relative w-full h-40">
               <Image
                 src={event.image}
                 alt={`${event.name} image`}
-                layout="fill"
-                objectFit="cover"
+                width={150}
+                height={150}
                 className="rounded-t-lg"
               />
-            </div>
             <div className="text-center p-4">
               <h4 className="text-sm font-semibold">
                 <b>{event.name}</b>
