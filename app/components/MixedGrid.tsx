@@ -15,7 +15,7 @@ const MixedGrid: React.FC<MixedGridProps> = ({ children }) => {
       <div className="row-span-2 bg-dc-blue"></div>
 
       {/* Contenido principal, con más espacio */}
-      <div className="row-span-2 bg-white mx-auto px-4 py-10">
+      <div className="row-span-2 bg-white mx-full px-4 py-10">
         {children}
       </div>
 

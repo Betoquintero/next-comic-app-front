@@ -31,7 +31,10 @@ export async function getPartsByUniverse(universe: string) {
 
   export async function getEventDetails(id: string) {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/${id}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/${id}`, {
+        cache: 'no-store',
+
+      });
   
       if (!response.ok) {
         throw new Error('Failed to fetch event details');

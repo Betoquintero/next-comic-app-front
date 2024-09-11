@@ -71,51 +71,53 @@ const ProfileEdit: React.FC = () => {
 
   return (
     <MixedGrid>
-      <h2 className="text-2xl font-bold mb-5 text-gray-800">Editing {userData.username}'s profile</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-gray-800">
-            Username
-            <input
-              className="formBox block w-full mt-1 border border-gray-300 rounded-md shadow-sm px-3 py-2"
-              required
-              type="text"
-              name="username"
-              value={userData.username}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label className="block text-gray-800">
-            Email
-            <input
-              className="formBox block w-full mt-1 border border-gray-300 rounded-md shadow-sm px-3 py-2"
-              required
-              type="email"
-              name="email"
-              value={userData.email}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label className="block text-gray-800">
-            Profile Image
-            <input
-              className="formBox block w-full mt-1 border border-gray-300 rounded-md shadow-sm px-3 py-2"
-              type="file"
-              onChange={handleFileUpload}
-            />
-          </label>
-        </div>
-        <button
-          type="submit"
-          className="bg-gray-700 text-white text-center text-lg rounded-lg py-2 w-full hover:shadow-lg"
-        >
-          Save changes and log out
-        </button>
-      </form>
+      <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-2xl font-bold mb-5 text-gray-800 text-center">Editing {userData.username}'s profile</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-gray-800">
+              Username
+              <input
+                className="formBox block w-full mt-1 border border-gray-300 rounded-md shadow-sm px-3 py-2"
+                required
+                type="text"
+                name="username"
+                value={userData.username}
+                onChange={handleChange}
+              />
+            </label>
+          </div>
+          <div>
+            <label className="block text-gray-800">
+              Email
+              <input
+                className="formBox block w-full mt-1 border border-gray-300 rounded-md shadow-sm px-3 py-2"
+                required
+                type="email"
+                name="email"
+                value={userData.email}
+                onChange={handleChange}
+              />
+            </label>
+          </div>
+          <div>
+            <label className="block text-gray-800">
+              Profile Image
+              <input
+                className="formBox block w-full mt-1 border border-gray-300 rounded-md shadow-sm px-3 py-2"
+                type="file"
+                onChange={handleFileUpload}
+              />
+            </label>
+          </div>
+          <button
+            type="submit"
+            className="bg-gray-700 text-white text-center text-lg rounded-lg py-2 w-full hover:shadow-lg"
+          >
+            Save changes and log out
+          </button>
+        </form>
+      </div>
     </MixedGrid>
   );
 };
