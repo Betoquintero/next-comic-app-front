@@ -19,7 +19,7 @@ const CustomGrid: React.FC<CustomGridProps> = ({ universe, children }) => {
       ></div>
 
       {/* Contenido principal, con más espacio centrado */}
-      <div className="row-span-2 bg-white mx-auto px-4 py-10">
+      <div className="row-span-2 bg-white mx-full px-4 py-10">
         {children}
       </div>
 
