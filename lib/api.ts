@@ -1,6 +1,8 @@
 export async function getPartsByUniverse(universe: string) {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/parts/${universe}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/parts/${universe}`, {
+        cache: 'no-store',
+      });
   
       if (!response.ok) {
         throw new Error(`Failed to fetch parts for universe: ${universe}`);

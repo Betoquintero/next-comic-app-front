@@ -20,6 +20,7 @@ const config: Config = {
         'dc-background': "url('/img/background-img-dc.jpg')",
         'marvel-background': "url('/img/background-img-marvel.jpg')",
         'mixed-background': "url('/img/marvel-dc-home.png')",
+        'no-image-found': "url('/img/No-image-found.jpg')",
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },

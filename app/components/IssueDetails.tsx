@@ -12,13 +12,23 @@ const IssueDetails: React.FC<IssueDetailsProps> = ({ image, universe }) => {
   return (
     <>
       <div className="mb-10 flex justify-center">
-        <Image
-          src={image}
-          alt="Issue image"
-          width={200}
-          height={200}
-          className="rounded-lg"
-        />
+      {image ? (
+            <Image
+              src={image}
+              alt={`image`}
+              width={200}
+              height={200}
+              className="rounded-t-lg"
+            />
+          ) : (
+            <Image
+              src="/img/no-image-found.jpg"
+              alt={`image`}
+              width={200}
+              height={200}
+              className="rounded-t-lg"
+            />
+          )}
       </div>
       <div className="mt-10">
 

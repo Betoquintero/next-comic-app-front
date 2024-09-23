@@ -78,13 +78,23 @@ const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
               >
                 <div className="flex flex-col h-full bg-white rounded-lg shadow-lg w-[150px]">
                   <Link href={`/issues/${issue._id}`} className="block flex-1">
-                    <Image
-                      src={issue.image}
-                      alt={issue.name}
-                      width={150}
-                      height={150}
-                      className={`rounded-t-lg ${issue.readStatus ? 'opacity-50' : 'opacity-100'}`}
-                    />
+                  {issue.image ? (
+                        <Image
+                          src={issue.image}
+                          alt={`${issue.name} image`}
+                          width={150}
+                          height={150}
+                          className="rounded-t-lg"
+                        />
+                      ) : (
+                        <Image
+                          src="/img/no-image-found.jpg"
+                          alt={`${issue.name} image`}
+                          width={150}
+                          height={150}
+                          className="rounded-t-lg"
+                        />
+                      )}
                     <div className="p-3 text-center flex-1 flex flex-col justify-between">
                       <h4 className="text-gray-800 font-semibold text-sm">
                         {issue.name}

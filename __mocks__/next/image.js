@@ -8,7 +8,7 @@ const NextImage = ({ src, alt, width, height, objectFit }) => {
       style={{
         width,
         height,
-        objectFit: objectFit || 'cover', // Añadir un valor por defecto
+        objectFit: objectFit || 'cover',
       }}
     />
   );
