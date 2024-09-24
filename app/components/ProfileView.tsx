@@ -140,6 +140,10 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
     }
 };
 
+if (!user) {
+  return <div>Loading...</div>;
+}
+
   return (
     <MixedGrid>
       <div className="text-center">

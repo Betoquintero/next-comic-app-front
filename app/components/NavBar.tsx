@@ -17,6 +17,11 @@ const Navbar: React.FC = () => {
     }
   };
 
+  const handleLogout = async () => {
+    await logoutUser();
+    router.push('/');
+  };
+
   return (
     <nav className="fixed top-0 w-full bg-gray-800 text-white shadow-md z-50">
       <div className="container mx-auto flex justify-between items-center py-4 px-6">
@@ -60,7 +65,7 @@ const Navbar: React.FC = () => {
                 Profile
               </Link>
               <button
-                onClick={logoutUser}
+                onClick={handleLogout}
                 className="text-lg font-semibold hover:text-gray-400"
               >
                 Logout
