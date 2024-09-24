@@ -58,32 +58,26 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
           Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
         },
       });
-
+  
       if (response.ok) {
         const readStatuses = await response.json();
-
-        collection.events.forEach(event => {
-            event.issues.forEach(issue => {
-            });
-        });
-
+  
         const updatedEvents = collection.events.map((event) => ({
           ...event,
           issues: event.issues.map((issue) => {
             const readStatus = readStatuses.find(
-              (status: { issueId: { _id: string; } }) => {
-                const isMatch = status.issueId._id === issue._id;
-                return isMatch;
-              }
+              (status: { issueId: { _id: string; } }) => status.issueId._id === issue._id
             );
             return { ...issue, readStatus: readStatus ? readStatus.isRead : false };
           }),
         }));
-
+  
+        // Actualiza el estado de la colección
         setCollection((prevCollection) => ({
           ...prevCollection,
           events: updatedEvents,
         }));
+  
       } else {
         console.error('Failed to fetch read statuses');
       }
@@ -91,6 +85,7 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
       console.error('Error fetching read statuses:', error);
     }
   };
+  
 
 
 

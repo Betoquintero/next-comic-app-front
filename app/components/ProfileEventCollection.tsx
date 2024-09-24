@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Event, Issue } from './ProfileView';
-import { useRouter } from 'next/navigation';
 
 interface ProfileEventCollectionProps {
   collection: {
@@ -20,20 +19,9 @@ const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
   deleteEventFromCollection,
   toggleReadStatus,
 }) => {
-  const [events, setEvents] = useState(collection.events);
-  const router = useRouter();
-
-
-  const handleDeleteEvent = async (eventId: string) => {
-    await deleteEventFromCollection(eventId);
-    setEvents(events.filter(event => event._id !== eventId));
-    router.refresh()
-
-  };
-
   return (
     <div>
-      {events.map((event) => (
+      {collection.events.map((event) => (
         <div
           key={event._id}
           className="flex flex-wrap p-4 border rounded-lg shadow-lg bg-gray-100 mb-6"
@@ -61,7 +49,7 @@ const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
             <div className="mt-4 text-center">
               <button
                 className="bg-red-500 text-white rounded-lg px-3 py-1 hover:bg-red-700 text-sm"
-                onClick={() => handleDeleteEvent(event._id)}
+                onClick={() => deleteEventFromCollection(event._id)}
               >
                 Delete event
               </button>
@@ -78,23 +66,13 @@ const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
               >
                 <div className="flex flex-col h-full bg-white rounded-lg shadow-lg w-[150px]">
                   <Link href={`/issues/${issue._id}`} className="block flex-1">
-                  {issue.image ? (
-                        <Image
-                          src={issue.image}
-                          alt={`${issue.name} image`}
-                          width={150}
-                          height={150}
-                          className="rounded-t-lg"
-                        />
-                      ) : (
-                        <Image
-                          src="/img/no-image-found.jpg"
-                          alt={`${issue.name} image`}
-                          width={150}
-                          height={150}
-                          className="rounded-t-lg"
-                        />
-                      )}
+                    <Image
+                      src={issue.image || '/img/no-image-found.jpg'}
+                      alt={`${issue.name} image`}
+                      width={150}
+                      height={150}
+                      className={`rounded-t-lg ${issue.readStatus ? 'opacity-50' : 'opacity-100'}`}
+                    />
                     <div className="p-3 text-center flex-1 flex flex-col justify-between">
                       <h4 className="text-gray-800 font-semibold text-sm">
                         {issue.name}
@@ -102,7 +80,11 @@ const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
                     </div>
                   </Link>
                   <button
-                    className="mt-2 bg-blue-500 text-white rounded-lg px-3 py-1 hover:bg-blue-700 w-full text-sm"
+                    className={`mt-2 ${
+                      issue.readStatus
+                        ? 'bg-green-500 hover:bg-green-700'
+                        : 'bg-blue-500 hover:bg-blue-700'
+                    } text-white rounded-lg px-3 py-1 w-full text-sm`}
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleReadStatus(issue._id);
