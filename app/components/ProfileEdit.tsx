@@ -23,28 +23,6 @@ const ProfileEdit: React.FC = () => {
     }));
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const uploadData = new FormData();
-    if (e.target.files) {
-      uploadData.append('imageUrl', e.target.files[0]);
-
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/upload`, {
-          method: 'POST',
-          body: uploadData,
-        });
-
-        const data = await response.json();
-        setUserData(prev => ({
-          ...prev,
-          imageUrl: data.fileUrl,
-        }));
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -97,16 +75,6 @@ const ProfileEdit: React.FC = () => {
                 name="email"
                 value={userData.email}
                 onChange={handleChange}
-              />
-            </label>
-          </div>
-          <div>
-            <label className="block text-gray-800">
-              Profile Image
-              <input
-                className="formBox block w-full mt-1 border border-gray-300 rounded-md shadow-sm px-3 py-2"
-                type="file"
-                onChange={handleFileUpload}
               />
             </label>
           </div>

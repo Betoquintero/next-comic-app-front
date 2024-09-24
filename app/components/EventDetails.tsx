@@ -67,9 +67,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
         <Image
           src={image}
           alt="Event image"
-          width={200}
-          height={200}
-          className="rounded-lg"
+          width={220}
+          height={350}
+          className="rounded-lg h-[350px] w-[220px]"
         />
       </div>
 
@@ -106,16 +106,16 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
               src={issue.image}
               alt={`${issue.name} image`}
               width={150}
-              height={150}
-              className="rounded-t-lg"
+              height={230}
+              className="rounded-t-lg h-[230px] w-[150px]"
             />
           ) : (
             <Image
               src="/img/no-image-found.jpg"
               alt={`${issue.name} image`}
               width={150}
-              height={150}
-              className="rounded-t-lg"
+              height={230}
+              className="rounded-t-lg h-[230px] w-[150px]"
             />
           )}
           <div className="text-center p-4">
@@ -147,7 +147,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
         <div className="mt-10 text-center">
           <h2 className="text-2xl font-bold text-gray-800">{alternateVersion.title}</h2>
           <div className="flex flex-col items-center mt-4">
-            <Image src={alternateVersion.image} alt="Alternate version image" width={200} height={200} className="rounded-lg" />
+            <Image src={alternateVersion.image} alt="Alternate version image" width={250} height={350} className="rounded-lg h-[350px] w-[250px]" />
           </div>
           <div className="flex flex-wrap justify-center mt-6">
             {alternateVersion.buyOption1 && <a href={alternateVersion.buyOption1} className="bg-green-500 text-white px-4 py-2 m-2 rounded">Alternate Buy Option 1</a>}

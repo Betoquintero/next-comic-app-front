@@ -25,9 +25,9 @@ const PartDetails: React.FC<PartDetailsProps> = ({ events, universe }) => {
                 src={event.image}
                 alt={`${event.name} image`}
                 width={150}
-                height={150}
-                className="rounded-t-lg"
-              />
+                height={230}
+                className="rounded-t-lg h-[230px] w-[150px]"
+                 />
             <div className="text-center p-4">
               <h4 className="text-sm font-semibold">
                 <b>{event.name}</b>

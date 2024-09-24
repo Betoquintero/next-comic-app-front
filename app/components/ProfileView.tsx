@@ -143,16 +143,6 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
   return (
     <MixedGrid>
       <div className="text-center">
-        <div className="mx-auto" style={{ width: '100px', height: '100px' }}>
-          <Image
-            className="rounded-full"
-            src={user.imageUrl}
-            alt="User Profile"
-            width={100}
-            height={100}
-            objectFit="cover"
-          />
-        </div>
         <h5 className="text-2xl mt-4 text-gray-800">Welcome to your profile page, {user.username}!</h5>
         <button
           className="mt-4 bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-700"

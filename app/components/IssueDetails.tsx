@@ -16,17 +16,17 @@ const IssueDetails: React.FC<IssueDetailsProps> = ({ image, universe }) => {
             <Image
               src={image}
               alt={`image`}
-              width={200}
-              height={200}
-              className="rounded-t-lg"
+              width={220}
+              height={350}
+              className="rounded-t-lg h-[350px] w-[220px]"
             />
           ) : (
             <Image
               src="/img/no-image-found.jpg"
               alt={`image`}
-              width={200}
-              height={200}
-              className="rounded-t-lg"
+              width={220}
+              height={350}
+              className="rounded-t-lg h-[350px] w-[220px]"
             />
           )}
       </div>

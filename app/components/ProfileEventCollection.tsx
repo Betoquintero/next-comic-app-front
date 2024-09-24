@@ -36,8 +36,8 @@ const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
                   src={event.image}
                   alt={event.name}
                   width={150}
-                  height={150}
-                  className="rounded-t-lg object-cover"
+                  height={230}
+                  className="rounded-t-lg object-cover h-[230px] w-[150px]"
                 />
                 <div className="p-3 text-center">
                   <h4 className="text-gray-800 font-semibold text-sm">
@@ -70,8 +70,8 @@ const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
                       src={issue.image || '/img/no-image-found.jpg'}
                       alt={`${issue.name} image`}
                       width={150}
-                      height={150}
-                      className={`rounded-t-lg ${issue.readStatus ? 'opacity-50' : 'opacity-100'}`}
+                      height={230}
+                      className={`rounded-t-lg h-[230px] w-[150px] ${issue.readStatus ? 'opacity-50' : 'opacity-100'}`}
                     />
                     <div className="p-3 text-center flex-1 flex flex-col justify-between">
                       <h4 className="text-gray-800 font-semibold text-sm">

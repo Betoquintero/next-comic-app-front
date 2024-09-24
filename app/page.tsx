@@ -87,11 +87,11 @@ const Home: React.FC = () => {
         {/* Logos de DC y Marvel */}
         <div className="flex flex-col sm:flex-row justify-around items-center mt-10 mb-10 space-y-4 sm:space-y-0">
           <Link href="/parts/DC" className="bg-gray-100 rounded-lg p-6 hover:shadow-lg flex justify-center items-center w-48 h-48">
-            <Image src={dcLogo} width={100} height={100} alt="DC logo" />
+            <Image src={dcLogo} width={100} height={100} alt="DC logo" className='h-[100px] w-[100px]' />
           </Link>
 
           <Link href="/parts/MARVEL" className="bg-gray-100 rounded-lg p-6 hover:shadow-lg flex justify-center items-center w-48 h-48">
-            <Image src={marvelLogo} width={100} height={100} alt="Marvel logo" />
+            <Image src={marvelLogo} width={60} height={100} alt="Marvel logo" className='h-[60px] w-[150px]' />
           </Link>
         </div>
       </MixedGrid>
