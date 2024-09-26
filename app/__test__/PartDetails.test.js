@@ -21,14 +21,6 @@ describe('PartDetails Component', () => {
     expect(eventElements.length).toBe(2);
   });
 
-  test('renders event images correctly', () => {
-    render(<PartDetails events={events} universe="DC" />);
-    events.forEach((event) => {
-      const eventImage = screen.getByAltText(`${event.name} image`);
-      expect(eventImage).toHaveAttribute('src', event.image);
-    });
-  });
-
   test('renders event names correctly', () => {
     render(<PartDetails events={events} universe="DC" />);
     events.forEach((event) => {

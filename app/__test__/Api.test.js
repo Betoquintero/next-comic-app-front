@@ -25,7 +25,7 @@ import {
   
         const result = await getPartsByUniverse('DC');
         expect(result).toEqual(mockData.data);
-        expect(fetch).toHaveBeenCalledWith(`${process.env.NEXT_PUBLIC_API_URL}/parts/DC`);
+        expect(fetch).toHaveBeenCalledWith(`${process.env.NEXT_PUBLIC_API_URL}/parts/DC`, {"cache": "no-store"});
       });
   
       it('should throw an error when the fetch fails', async () => {
@@ -45,7 +45,7 @@ import {
   
         const result = await getPartDetails('DC', '123');
         expect(result).toEqual(mockData.data);
-        expect(fetch).toHaveBeenCalledWith(`${process.env.NEXT_PUBLIC_API_URL}/parts/DC/123`);
+        expect(fetch).toHaveBeenCalledWith(`${process.env.NEXT_PUBLIC_API_URL}/parts/DC/123`, {"cache": "no-store"});
       });
   
       it('should throw an error when the fetch fails', async () => {
@@ -65,7 +65,7 @@ import {
   
         const result = await getEventDetails('event1');
         expect(result).toEqual(mockData.data);
-        expect(fetch).toHaveBeenCalledWith(`${process.env.NEXT_PUBLIC_API_URL}/events/event1`);
+        expect(fetch).toHaveBeenCalledWith(`${process.env.NEXT_PUBLIC_API_URL}/events/event1`, {"cache": "no-store"});
       });
   
       it('should throw an error when the fetch fails', async () => {

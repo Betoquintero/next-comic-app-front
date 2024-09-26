@@ -64,7 +64,10 @@ describe('EventDetails Component', () => {
       expect(toast.success).toHaveBeenCalledWith('Successfully added event to collection', {
         position: "bottom-center",
         autoClose: 3000,
-        hideProgressBar: true,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
       });
     });
   });
@@ -85,7 +88,10 @@ describe('EventDetails Component', () => {
       expect(toast.info).toHaveBeenCalledWith("Event is already on user's collection", {
         position: "bottom-center",
         autoClose: 3000,
-        hideProgressBar: true,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
       });
     });
   });
@@ -106,6 +112,9 @@ describe('EventDetails Component', () => {
         position: "bottom-center",
         autoClose: 3000,
         hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
       });
     });
   });

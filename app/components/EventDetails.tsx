@@ -51,10 +51,39 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
         throw new Error('Failed to add event to collection');
       }
 
-      toast.success('Successfully added event to collection');
-      router.refresh();
+      const data = await response.json(); // Get the response data
+
+      if (data.message === "Event is already on user's collection") {
+        toast.info(data.message, {
+          position: "bottom-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      } else {
+        toast.success('Successfully added event to collection', {
+          position: "bottom-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      }
+      
+      router.refresh(); // Refresh the page or the component as needed
+  
     } catch (error) {
-      toast.error('Failed to add event to collection');
+      toast.error('Failed to add event to collection', {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } finally {
       setIsAdding(false);
     }
