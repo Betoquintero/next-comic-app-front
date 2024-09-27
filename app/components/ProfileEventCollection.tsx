@@ -24,7 +24,6 @@ const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
   const [localEvents, setLocalEvents] = useState<Event[]>(collection.events);
   const router = useRouter();
 
-  // Re-fetch data or refresh when the component mounts
   useEffect(() => {
     setLocalEvents(collection.events);
   }, [collection.events]);
@@ -40,7 +39,7 @@ const ProfileEventCollection: React.FC<ProfileEventCollectionProps> = ({
   const handleDeleteEvent = async (eventId: string) => {
     await deleteEventFromCollection(eventId);
     setLocalEvents((prevEvents) => prevEvents.filter((event) => event._id !== eventId));
-    router.refresh(); // Refresh the page or component to get the latest data
+    router.refresh();
   };
 
   return (

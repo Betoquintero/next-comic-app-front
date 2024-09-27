@@ -30,7 +30,16 @@ interface EventDetailsProps {
   };
 }
 
-const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, eventId, buyOption1, buyOption2, buyOption3, alternateVersion }) => {
+const EventDetails: React.FC<EventDetailsProps> = ({
+  image,
+  issues,
+  universe,
+  eventId,
+  buyOption1,
+  buyOption2,
+  buyOption3,
+  alternateVersion,
+}) => {
   const { isAuthenticated } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
   const router = useRouter();
@@ -51,7 +60,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
         throw new Error('Failed to add event to collection');
       }
 
-      const data = await response.json(); // Get the response data
+      const data = await response.json();
 
       if (data.message === "Event is already on user's collection") {
         toast.info(data.message, {
@@ -72,9 +81,8 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
           draggable: true,
         });
       }
-      
-      router.refresh(); // Refresh the page or the component as needed
-  
+
+      router.refresh();
     } catch (error) {
       toast.error('Failed to add event to collection', {
         position: "bottom-center",
@@ -89,103 +97,105 @@ const EventDetails: React.FC<EventDetailsProps> = ({ image, issues, universe, ev
     }
   };
 
-
   return (
-    <div className="flex flex-col items-center min-h-screen p-4">
-      <div className="flex flex-col items-center mb-10">
-        <Image
-          src={image}
-          alt="Event image"
-          width={220}
-          height={350}
-          className="rounded-lg h-[350px] w-[220px]"
-        />
-      </div>
-
+    <div className="relative flex flex-col items-center min-h-screen p-4 pt-20">
       {isAuthenticated && (
-        <form onSubmit={handleAddToCollection} className="text-center mb-10">
-          <button
-            type="submit"
-            className={`${universe === 'DC' ? 'bg-blue-600' : 'bg-red-600'} text-white py-2 px-4 rounded-lg hover:bg-opacity-80 transition duration-300`}
-            disabled={isAdding}
-          >
-            {isAdding ? 'Adding...' : 'Add Event to My Collection'}
-          </button>
-        </form>
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
+          <form onSubmit={handleAddToCollection}>
+            <button
+              type="submit"
+              className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-opacity-80 transition duration-300"
+              disabled={isAdding}
+            >
+              {isAdding ? 'Adding...' : 'Add Event to My Collection'}
+            </button>
+          </form>
+        </div>
       )}
 
-      {/* Sección de issues */}
+      <div className="flex flex-col lg:flex-row items-start mb-10 lg:space-x-10 w-full max-w-5xl mt-10">
+        <div className="flex flex-col items-center flex-1">
+          <Image
+            src={image}
+            alt="Event image"
+            width={200}
+            height={300}
+            className="rounded-t-lg h-[300px] w-[200px]"
+          />
+          <h2 className="text-3xl font-bold text-gray-800 mt-4">Main Event</h2>
+          <div className="flex flex-col items-start mt-2">
+            {buyOption1 && <a href={buyOption1} className="bg-blue-500 text-white px-4 py-2 m-2 rounded">Buy Option 1</a>}
+            {buyOption2 && <a href={buyOption2} className="bg-blue-500 text-white px-4 py-2 m-2 rounded">Buy Option 2</a>}
+            {buyOption3 && <a href={buyOption3} className="bg-blue-500 text-white px-4 py-2 m-2 rounded">Buy Option 3</a>}
+            {!buyOption1 && !buyOption2 && !buyOption3 && <p>No buy options available for this event.</p>}
+          </div>
+        </div>
+
+        {alternateVersion && (
+          <div className="flex flex-col items-center flex-1 mt-8 lg:mt-0">
+            <Image
+              src={alternateVersion.image}
+              alt="Alternate version image"
+              width={200}
+              height={300}
+              className="rounded-t-lg h-[300px] w-[200px]"
+            />
+            <h2 className="text-3xl font-bold text-gray-800 mt-4">Alternate Version: {alternateVersion.title}</h2>
+            <div className="flex flex-col items-start mt-2">
+              {alternateVersion.buyOption1 && <a href={alternateVersion.buyOption1} className="bg-green-500 text-white px-4 py-2 m-2 rounded">Alt Buy Option 1</a>}
+              {alternateVersion.buyOption2 && <a href={alternateVersion.buyOption2} className="bg-green-500 text-white px-4 py-2 m-2 rounded">Alt Buy Option 2</a>}
+              {alternateVersion.buyOption3 && <a href={alternateVersion.buyOption3} className="bg-green-500 text-white px-4 py-2 m-2 rounded">Alt Buy Option 3</a>}
+              {!alternateVersion.buyOption1 && !alternateVersion.buyOption2 && !alternateVersion.buyOption3 && <p>No alternate buy options available.</p>}
+            </div>
+          </div>
+        )}
+      </div>
+
       <div className="text-center mt-10 text-2xl font-bold text-gray-800">
         <strong>Comics that belong to this event</strong>
       </div>
 
-      <div className="flex flex-wrap justify-center mt-6">
-  {issues.length > 0 ? (
-    issues.map((issue) => (
-      <div
-        key={issue._id}
-        className="bg-light-grey rounded-lg shadow-md transition-shadow duration-300 hover:shadow-lg m-4 w-[150px]"
-      >
-        <Link
-          href={`/issues/${issue._id}`}
-          className="block no-underline text-black"
-        >
-          {issue.image ? (
-            <Image
-              src={issue.image}
-              alt={`${issue.name} image`}
-              width={150}
-              height={230}
-              className="rounded-t-lg h-[230px] w-[150px]"
-            />
-          ) : (
-            <Image
-              src="/img/no-image-found.jpg"
-              alt={`${issue.name} image`}
-              width={150}
-              height={230}
-              className="rounded-t-lg h-[230px] w-[150px]"
-            />
-          )}
-          <div className="text-center p-4">
-            <h4 className="text-sm font-semibold">{issue.name}</h4>
+      <div className="flex flex-wrap justify-center mt-6 w-full max-w-5xl">
+        {issues.length > 0 ? (
+          issues.map((issue) => (
+            <div
+              key={issue._id}
+              className="bg-light-grey rounded-lg shadow-md transition-shadow duration-300 hover:shadow-lg m-4 w-[150px]"
+            >
+              <Link
+                href={`/issues/${issue._id}`}
+                className="block no-underline text-black"
+              >
+                {issue.image ? (
+                  <Image
+                    src={issue.image}
+                    alt={`${issue.name} image`}
+                    width={150}
+                    height={230}
+                    className="rounded-t-lg h-[230px] w-[150px]"
+                  />
+                ) : (
+                  <Image
+                    src="/img/no-image-found.jpg"
+                    alt={`${issue.name} image`}
+                    width={150}
+                    height={230}
+                    className="rounded-t-lg h-[230px] w-[150px]"
+                  />
+                )}
+                <div className="text-center p-4">
+                  <h4 className="text-sm font-semibold">{issue.name}</h4>
+                </div>
+              </Link>
+            </div>
+          ))
+        ) : (
+          <div className="flex items-center justify-center w-full h-48 bg-gray-200 rounded-lg">
+            <p className="text-gray-600">No issues available</p>
           </div>
-        </Link>
-      </div>
-    ))
-  ) : (
-    <div className="flex items-center justify-center w-full h-48 bg-gray-200 rounded-lg">
-      <p className="text-gray-600">No issues available</p>
-    </div>
-  )}
-</div>
-
-      {/* Opciones de compra */}
-      <div className="text-center mt-10 text-2xl font-bold text-gray-800">
-        <strong>Buy Options</strong>
-      </div>
-      <div className="flex flex-wrap justify-center mt-6">
-        {buyOption1 && <a href={buyOption1} className="bg-blue-500 text-white px-4 py-2 m-2 rounded">Buy Option 1</a>}
-        {buyOption2 && <a href={buyOption2} className="bg-blue-500 text-white px-4 py-2 m-2 rounded">Buy Option 2</a>}
-        {buyOption3 && <a href={buyOption3} className="bg-blue-500 text-white px-4 py-2 m-2 rounded">Buy Option 3</a>}
-        {!buyOption1 && !buyOption2 && !buyOption3 && <p>No buy options for this event, issues must be purchased separately</p>}
+        )}
       </div>
 
-      {/* Versión alternativa */}
-      {alternateVersion && (
-        <div className="mt-10 text-center">
-          <h2 className="text-2xl font-bold text-gray-800">{alternateVersion.title}</h2>
-          <div className="flex flex-col items-center mt-4">
-            <Image src={alternateVersion.image} alt="Alternate version image" width={250} height={350} className="rounded-lg h-[350px] w-[250px]" />
-          </div>
-          <div className="flex flex-wrap justify-center mt-6">
-            {alternateVersion.buyOption1 && <a href={alternateVersion.buyOption1} className="bg-green-500 text-white px-4 py-2 m-2 rounded">Alternate Buy Option 1</a>}
-            {alternateVersion.buyOption2 && <a href={alternateVersion.buyOption2} className="bg-green-500 text-white px-4 py-2 m-2 rounded">Alternate Buy Option 2</a>}
-            {alternateVersion.buyOption3 && <a href={alternateVersion.buyOption3} className="bg-green-500 text-white px-4 py-2 m-2 rounded">Alternate Buy Option 3</a>}
-            {!alternateVersion.buyOption1 && !alternateVersion.buyOption2 && !alternateVersion.buyOption3 && <p>No alternate buy options for this event.</p>}
-          </div>
-        </div>
-      )}
       <ToastContainer />
     </div>
   );
