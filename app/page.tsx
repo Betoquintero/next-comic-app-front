@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import MixedGrid from './components/MixedGrid';
 import Image from 'next/image';
-import Head from 'next/head';  // Importa el componente Head
+import Head from 'next/head';
 import dcLogo from '../public/img/DC_Comics_logo.svg.png';
 import marvelLogo from '../public/img/Marvel_Logo.svg.png';
 import HouseOfHeroesLogo from '../public/img/house-of-heroes-logo.png';
@@ -10,15 +10,14 @@ import type { Metadata } from 'next';
 
 // Define la metadata de la página usando el objeto `metadata`
 export const metadata: Metadata = {
-  title: 'House of Heroes - Your Guide to the Comic Universe',
-  description: 'Explore the best comic reading experience at House of Heroes. Find reading orders for DC and Marvel events and more!',
+  title: 'Super Heroes Legacy - Your Guide to the Comic Universe',
+  description: 'Explore the best comic reading experience at Super Heroes Legacy. Find reading orders for DC and Marvel events and more!',
   keywords: 'Comics, DC Comics, Marvel, Reading Order, Events, Issues',
-  // Puedes agregar otras propiedades como 'canonical'
   openGraph: {
-    title: 'House of Heroes - Your Guide to the Comic Universe',
+    title: 'Super Heroes Legacy - Your Guide to the Comic Universe',
     description: 'Explore the best comic reading experience at House of Heroes.',
     url: 'https://www.yourdomain.com',
-    siteName: 'House of Heroes',
+    siteName: 'Super Heroes Legacy',
     images: [
       {
         url: '/path-to-image.jpg',
@@ -34,7 +33,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@houseofheroes',
     title: 'House of Heroes',
-    description: 'Explore the best comic reading experience at House of Heroes.',
+    description: 'Explore the best comic reading experience at Super Heroes Legacy.',
     images: ['/path-to-image.jpg'],
   },
 };
@@ -43,7 +42,7 @@ const Home: React.FC = () => {
   return (
     <>
       <Head>
-        <title>House of Heroes - Your Guide to the Comic Universe</title>
+        <title>Super Heroes Legacy - Your Guide to the Comic Universe</title>
         <meta name="description" content="Explore the best comic reading experience at House of Heroes. Find reading orders for DC and Marvel events and more!" />
         <meta name="keywords" content="Comics, DC Comics, Marvel, Reading Order, Events, Issues" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -59,7 +58,7 @@ const Home: React.FC = () => {
         <div className="bg-gray-200 rounded-xl p-4 mb-6 text-justify mx-auto w-full shadow-lg">
            <p className="mb-4 text-gray-800 text-md md:text-base lg:text-lg">
             
-            Welcome to House of heroes, the best page of the comics community. If you are new to this world, here you will find the best way to enjoy the experience of continuity in the comics world. On the other hand, if you have some experience, you will enjoy yourself exploring through the different stages of comics since the beginning and also, contribute to this great community.
+            Welcome to Super heroes legacy, the best page of the comics community. If you are new to this world, here you will find the best way to enjoy the experience of continuity in the comics world. On the other hand, if you have some experience, you will enjoy yourself exploring through the different stages of comics since the beginning and also, contribute to this great community.
           </p>
           <p className="text-gray-800 text-md md:text-base lg:text-lg">
             People often get very confused when it comes to the reading order of comics. Normally you start reading a comic and start an ongoing story with no context, so that takes the fun out of it or makes you quit since you are in the middle of nowhere.
@@ -69,7 +68,7 @@ const Home: React.FC = () => {
         {/* Segunda card de texto */}
         <div className="bg-gray-200 rounded-xl p-4 mb-6 text-justify mx-auto w-full shadow-lg">
           <p className="mb-4 text-gray-800 text-md md:text-base lg:text-lg">
-            In House of Heroes, we make it easy for you. Every big brand (DC or Marvel) complete storyline is divided into PARTS. Every part has a number of EVENTS that have a beginning and an end. And finally, every EVENT has ISSUES. Feel free to check out the parts and their descriptions, and hop in the most interesting for you!
+            In Super Heroes Legacy, we make it easy for you. Every big brand (DC or Marvel) complete storyline is divided into PARTS. Every part has a number of EVENTS that have a beginning and an end. And finally, every EVENT has ISSUES. Feel free to check out the parts and their descriptions, and hop in the most interesting for you!
           </p>
           <p className="text-gray-800 text-md md:text-base lg:text-lg">First of all, select your favorite universe and enjoy!</p>
         </div>

@@ -2,7 +2,8 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { AuthProvider } from './context/AuthContext'
-import Navbar from '../app/components/NavBar' // Import the Navbar component
+import Navbar from '../app/components/NavBar'
+import Footer from '../app/components/Footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,8 +18,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         <AuthProvider>
           <Navbar /> 
-          <div className="pt-16"> {/* Padding added to prevent content from being hidden behind the navbar */}
-            {children}
+          <div className="pt-16 flex flex-col min-h-screen">
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
           </div>
         </AuthProvider>
       </body>
