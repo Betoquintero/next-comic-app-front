@@ -29,9 +29,6 @@ export const metadata: Metadata = {
     locale: 'en_US',
     type: 'website',
   },
-  instagram: {
-    url: 'https://www.instagram.com/super.heroes.legacy',
-  },
 };
 
 const Home: React.FC = () => {
