@@ -124,8 +124,8 @@ const EventDetails: React.FC<EventDetailsProps> = ({
           />
           <h2 className="text-3xl font-bold text-gray-800 mt-4">Main Event</h2>
           <div className="flex flex-col items-start mt-2">
-            {buyOption1 && <a href={buyOption1} className="bg-blue-500 text-white px-4 py-2 m-2 rounded">Buy Option 1</a>}
-            {buyOption2 && <a href={buyOption2} className="bg-blue-500 text-white px-4 py-2 m-2 rounded">Buy Option 2</a>}
+            {buyOption1 && <a href={buyOption1} className="bg-blue-500 text-white px-4 py-2 m-2 rounded">Buy it on Amazon</a>}
+            {buyOption2 && <a href={buyOption2} className="bg-blue-500 text-white px-4 py-2 m-2 rounded">Buy it for Kindle</a>}
             {buyOption3 && <a href={buyOption3} className="bg-blue-500 text-white px-4 py-2 m-2 rounded">Buy Option 3</a>}
             {!buyOption1 && !buyOption2 && !buyOption3 && <p>No buy options available for this event.</p>}
           </div>
@@ -142,8 +142,8 @@ const EventDetails: React.FC<EventDetailsProps> = ({
             />
             <h2 className="text-3xl font-bold text-gray-800 mt-4">Alternate Version: {alternateVersion.title}</h2>
             <div className="flex flex-col items-start mt-2">
-              {alternateVersion.buyOption1 && <a href={alternateVersion.buyOption1} className="bg-green-500 text-white px-4 py-2 m-2 rounded">Alt Buy Option 1</a>}
-              {alternateVersion.buyOption2 && <a href={alternateVersion.buyOption2} className="bg-green-500 text-white px-4 py-2 m-2 rounded">Alt Buy Option 2</a>}
+              {alternateVersion.buyOption1 && <a href={alternateVersion.buyOption1} className="bg-green-500 text-white px-4 py-2 m-2 rounded">Buy it on Amazon</a>}
+              {alternateVersion.buyOption2 && <a href={alternateVersion.buyOption2} className="bg-green-500 text-white px-4 py-2 m-2 rounded">Buy it for Kindle</a>}
               {alternateVersion.buyOption3 && <a href={alternateVersion.buyOption3} className="bg-green-500 text-white px-4 py-2 m-2 rounded">Alt Buy Option 3</a>}
               {!alternateVersion.buyOption1 && !alternateVersion.buyOption2 && !alternateVersion.buyOption3 && <p>No alternate buy options available.</p>}
             </div>
@@ -195,7 +195,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({
           </div>
         )}
       </div>
-
       <ToastContainer />
     </div>
   );
