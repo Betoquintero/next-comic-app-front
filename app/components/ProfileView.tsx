@@ -1,11 +1,11 @@
 'use client';
 
-import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import MixedGrid from './MixedGrid';
 import ProfileEventCollection from './ProfileEventCollection';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast'; // Import for toast notifications
 
 export interface Event {
   _id: string;
@@ -35,7 +35,7 @@ interface UserData {
 }
 
 const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
-  const { user } = useAuth();
+  const { user, authenticateUser, logoutUser } = useAuth();
   const router = useRouter();
 
   const [collection, setCollection] = useState({
@@ -61,7 +61,6 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
   
       if (response.ok) {
         const readStatuses = await response.json();
-  
         const updatedEvents = collection.events.map((event) => ({
           ...event,
           issues: event.issues.map((issue) => {
@@ -71,13 +70,10 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
             return { ...issue, readStatus: readStatus ? readStatus.isRead : false };
           }),
         }));
-  
-        // Actualiza el estado de la colección
         setCollection((prevCollection) => ({
           ...prevCollection,
           events: updatedEvents,
         }));
-  
       } else {
         console.error('Failed to fetch read statuses');
       }
@@ -85,9 +81,37 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
       console.error('Error fetching read statuses:', error);
     }
   };
-  
 
+  const deleteAccount = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/profile/delete/${user?._id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
+        },
+      });
 
+      if (response.ok) {
+        logoutUser();
+        router.push('/');
+        setTimeout(() => {
+          window.location.reload();
+        }, 100); 
+      } else {
+        toast.error('Failed to delete account');
+      }
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      toast.error('An error occurred while deleting the account');
+    }
+  };
+
+  const handleDeleteAccount = () => {
+    const confirmed = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
+    if (confirmed) {
+      deleteAccount();
+    }
+  };
 
   const deleteEventFromCollection = async (eventId: string) => {
     try {
@@ -111,61 +135,72 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
 
   const toggleReadStatus = async (issueId: string) => {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/readStatuses/toggle-read/${issueId}`, {
-            method: 'PATCH',
-            headers: {
-                Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
-            },
-        });
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/readStatuses/toggle-read/${issueId}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
+        },
+      });
 
-        if (response.ok) {
-            const updatedStatus = await response.json();
-
-            const updatedEvents = collection.events.map((event) => ({
-                ...event,
-                issues: event.issues.map((issue) =>
-                    issue._id === issueId ? { ...issue, readStatus: updatedStatus.isRead } : issue
-                ),
-            }));
-
-            setCollection((prevCollection) => ({
-              ...prevCollection,
-              events: updatedEvents,
-            }));
-        } else {
-            console.error('Failed to toggle read status');
-        }
+      if (response.ok) {
+        const updatedStatus = await response.json();
+        const updatedEvents = collection.events.map((event) => ({
+          ...event,
+          issues: event.issues.map((issue) =>
+            issue._id === issueId ? { ...issue, readStatus: updatedStatus.isRead } : issue
+          ),
+        }));
+        setCollection((prevCollection) => ({
+          ...prevCollection,
+          events: updatedEvents,
+        }));
+      } else {
+        console.error('Failed to toggle read status');
+      }
     } catch (error) {
-        console.error('Error toggling read status:', error);
+      console.error('Error toggling read status:', error);
     }
-};
+  };
 
-if (!user) {
-  return <div>Loading...</div>;
-}
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <MixedGrid>
-      <div className="text-center">
-        <h5 className="text-2xl mt-4 text-gray-800">Welcome to your profile page, {user.username}!</h5>
-        <button
-          className="mt-4 bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-700"
-          onClick={() => router.push(`/profile/edit`)}
-        >
-          Edit your profile
-        </button>
+      <div className="flex justify-center items-center gap-4 mt-4">
+        <h5 className="text-2xl text-gray-800">Welcome to your profile page, {user.username}!</h5>
+        <div className="ml-auto flex items-center gap-4">
+          <button
+            className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-700"
+            onClick={() => router.push(`/profile/edit`)}
+          >
+            Edit your profile
+          </button>
+
+          {/* Delete account button */}
+          <button
+            className="bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-800"
+            onClick={handleDeleteAccount}
+          >
+            Delete account
+          </button>
+        </div>
       </div>
+
       <p className="mt-8 text-center text-gray-800">
         <strong>
           Below you will find your saved collections. If you do not have any, visit the events and collections pages to find
           the ones you like the most!
         </strong>
       </p>
+
       <ProfileEventCollection
         collection={collection}
         deleteEventFromCollection={deleteEventFromCollection}
         toggleReadStatus={toggleReadStatus}
       />
+
       {!collection.events.length && (
         <p className="text-center mt-8 text-gray-800">
           <strong>No events to show. Visit the events page to start collecting!</strong>
