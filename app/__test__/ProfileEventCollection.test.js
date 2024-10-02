@@ -67,12 +67,10 @@ describe('ProfileEventCollection Component', () => {
       />
     );
 
-    // Find and click "Mark as Read" button for unread issue
     const toggleButton = screen.getByText('Mark as Read');
     fireEvent.click(toggleButton);
     expect(mockToggleReadStatus).toHaveBeenCalledWith('issue1');
 
-    // Find and click "Mark as Unread" button for read issue
     const toggleUnreadButton = screen.getByText('Mark as Unread');
     fireEvent.click(toggleUnreadButton);
     expect(mockToggleReadStatus).toHaveBeenCalledWith('issue2');
