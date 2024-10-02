@@ -34,11 +34,9 @@ describe('ProfileEventCollection Component', () => {
       />
     );
 
-    // Check if event is rendered
     const eventName = screen.getByText('Event 1');
     expect(eventName).toBeInTheDocument();
 
-    // Check if issues are rendered
     const issueName1 = screen.getByText('Issue 1');
     const issueName2 = screen.getByText('Issue 2');
     expect(issueName1).toBeInTheDocument();
