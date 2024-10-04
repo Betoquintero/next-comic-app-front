@@ -11,6 +11,8 @@ export default function Signup() {
   const [password, setPassword] = useState('');
   const [passwordControl, setPasswordControl] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+  const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined); // Added for success feedback
+  const [isSubmitting, setIsSubmitting] = useState(false); // Added to track form submission
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,6 +32,7 @@ export default function Signup() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
         method: 'POST',
@@ -48,9 +51,15 @@ export default function Signup() {
         throw new Error(errorData.error || 'Something went wrong');
       }
 
-      router.push('/login');
+      setSuccessMessage("Signup successful! Please check your email to verify your account.");
+      setTimeout(() => {
+        router.push('/login');
+      }, 3000);
+
     } catch (error: any) {
       setErrorMessage(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -58,6 +67,7 @@ export default function Signup() {
     <MixedGrid> 
       <div className="p-10 bg-gray-300 rounded-xl shadow-lg">
         <h2 className="text-2xl font-bold mb-5 text-gray-800">Sign up</h2>
+        {successMessage && <p className="text-green-500">{successMessage}</p>}
         <form className="space-y-4" onSubmit={handleSubmit}>
           <label className="block text-gray-800">
             Username
@@ -107,8 +117,9 @@ export default function Signup() {
           <button 
             className="bg-gray-700 text-white text-center text-lg rounded-lg py-2 w-full hover:shadow-lg"
             type="submit"
+            disabled={isSubmitting || !!errorMessage}
           >
-            Register
+            {isSubmitting ? 'Registering...' : 'Register'}
           </button>
         </form>
       </div>
