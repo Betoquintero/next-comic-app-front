@@ -24,29 +24,32 @@ const ContactForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // Validate email format
+  
+    if (!formData.email || !formData.message) {
+      toast.error('Please fill in both the email and message fields.');
+      return;
+    }
+  
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
     if (!emailRegex.test(formData.email)) {
       toast.error('Please enter a valid email address.');
       return;
     }
-
+  
     setIsSubmitting(true);
-
+  
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
         toast.success('Your message has been sent successfully!');
         setFormData({ name: '', email: '', message: '' });
-        router.push('/'); // Redirect to home or any other page if needed
       } else {
         toast.error('Failed to send your message. Please try again later.');
       }
@@ -57,6 +60,7 @@ const ContactForm: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+  
 
   return (
     <MixedGrid>
