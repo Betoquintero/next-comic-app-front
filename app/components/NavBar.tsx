@@ -1,16 +1,17 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
 import Link from 'next/link';
 
 const Navbar: React.FC = () => {
   const { isAuthenticated, user, logoutUser } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleGoBack = () => {
-    if (window.history.length > 1) {
+    if (pathname !== '/') {
       router.back();
     } else {
       router.push('/');
@@ -25,18 +26,15 @@ const Navbar: React.FC = () => {
   return (
     <nav className="fixed top-0 w-full bg-gray-800 text-white shadow-md z-50">
       <div className="container mx-auto flex justify-between items-center py-4 px-6">
-        {/* Home Button */}
         <Link href="/" className="text-2xl font-bold hover:text-gray-400">
           Home
         </Link>
-        <button
-          onClick={handleGoBack}
-          className="text-lg font-semibold hover:text-gray-400"
-        >
-          Go Back
-        </button>
 
         <div className="flex space-x-4">
+          <Link href="/contact" className="text-lg font-semibold hover:text-gray-400">
+            Contact
+          </Link>
+
           {!isAuthenticated && (
             <>
               <Link
@@ -46,7 +44,6 @@ const Navbar: React.FC = () => {
                 Signup
               </Link>
 
-              {/* Login Button */}
               <Link
                 href="/login"
                 className="text-lg font-semibold hover:text-gray-400"
