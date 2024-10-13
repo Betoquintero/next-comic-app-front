@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import MixedGrid from './MixedGrid';
 import ProfileEventCollection from './ProfileEventCollection';
 import { useAuth } from '../context/AuthContext';
-import toast from 'react-hot-toast'; // Import for toast notifications
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export interface Event {
   _id: string;
   universe: string;
@@ -92,17 +92,38 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
       });
 
       if (response.ok) {
+        toast.success('Account deleted successfully.', {
+          position: "bottom-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
         logoutUser();
         router.push('/');
         setTimeout(() => {
           window.location.reload();
         }, 100); 
       } else {
-        toast.error('Failed to delete account');
-      }
+        toast.error('Failed to delete account', {
+          position: "bottom-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      }     
     } catch (error) {
-      console.error('Error deleting account:', error);
-      toast.error('An error occurred while deleting the account');
+      toast.error('An error occurred while deleting the account', {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   };
 
@@ -127,9 +148,25 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
           ...prevCollection,
           events: prevCollection.events.filter((event) => event._id !== eventId),
         }));
+        toast.success('Event removed from collection.', {
+          position: "bottom-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       }
     } catch (error) {
       console.error(error);
+      toast.error('An error occurred while removing the event from the collection.', {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   };
 

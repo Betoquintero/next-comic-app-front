@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import MixedGrid from '../components/MixedGrid';
-import toast from 'react-hot-toast';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ContactForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -26,13 +27,27 @@ const ContactForm: React.FC = () => {
     e.preventDefault();
   
     if (!formData.email || !formData.message) {
-      toast.error('Please fill in both the email and message fields.');
+      toast.error('Please fill in both the email and message fields.', {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       return;
     }
   
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
     if (!emailRegex.test(formData.email)) {
-      toast.error('Please enter a valid email address.');
+      toast.error('Please enter a valid email address.', {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       return;
     }
   
@@ -48,14 +63,35 @@ const ContactForm: React.FC = () => {
       });
   
       if (response.ok) {
-        toast.success('Your message has been sent successfully!');
+        toast.success('Your message has been sent successfully!', {
+          position: "bottom-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
         setFormData({ name: '', email: '', message: '' });
       } else {
-        toast.error('Failed to send your message. Please try again later.');
+        toast.error('Failed to send your message. Please try again later.', {
+          position: "bottom-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       }
     } catch (error) {
       console.error(error);
-      toast.error('An error occurred while sending your message.');
+      toast.error('An error occurred while sending your message.', {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } finally {
       setIsSubmitting(false);
     }

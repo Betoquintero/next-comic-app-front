@@ -5,7 +5,8 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import MixedGrid from './MixedGrid';
 import { useAuth } from '../context/AuthContext';
-import toast from 'react-hot-toast';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProfileEdit: React.FC = () => {
   const { user, logoutUser } = useAuth();
@@ -36,14 +37,36 @@ const ProfileEdit: React.FC = () => {
       });
 
       if (response.ok) {
-        toast.success('User edited successfully. Please log in again.');
+        toast.success('User edited successfully. Please log in again.', {
+          position: "bottom-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
         logoutUser();
         router.push('/login');
       } else {
-        console.error('Failed to update profile');
+        toast.error('Failed to update profile. Please try again.', {
+          position: "bottom-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       }
     } catch (error) {
       console.error(error);
+      toast.error('An error occurred while updating the profile.', {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   };
 
@@ -86,6 +109,7 @@ const ProfileEdit: React.FC = () => {
           </button>
         </form>
       </div>
+      <ToastContainer />
     </MixedGrid>
   );
 };
