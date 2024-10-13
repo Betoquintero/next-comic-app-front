@@ -151,6 +151,7 @@ const ContactForm: React.FC = () => {
           </button>
         </form>
       </div>
+      <ToastContainer/> 
     </MixedGrid>
   );
 };

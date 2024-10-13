@@ -214,8 +214,6 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
           >
             Edit your profile
           </button>
-
-          {/* Delete account button */}
           <button
             className="bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-800"
             onClick={handleDeleteAccount}
@@ -243,6 +241,7 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
           <strong>No events to show. Visit the events page to start collecting!</strong>
         </p>
       )}
+      <ToastContainer />
     </MixedGrid>
   );
 };
