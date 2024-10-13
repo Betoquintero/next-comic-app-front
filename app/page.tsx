@@ -34,7 +34,7 @@ const Home: React.FC = () => {
   return (
     <MixedGrid>
       <div className="flex flex-col items-center justify-center mb-8">
-        <Image src={SuperHeroesLegacyLogo} width={300} height={100} alt="Super Heroes Legacy Logo" />
+        <Image src={SuperHeroesLegacyLogo} width={300} height={300}  alt="Super Heroes Legacy Logo"  className="h-[300px] w-[300px]"/>
       </div>
 
       <div className="bg-gray-200 rounded-xl p-4 mb-6 text-justify mx-auto w-full shadow-lg">

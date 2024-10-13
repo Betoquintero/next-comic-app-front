@@ -32,10 +32,14 @@ const LoginPage = () => {
         // Navigate to the user's profile page using their user ID
         router.push(`/profile/${data.userId}`);
       } else if (response.status === 401) {
-        setError('Unable to validate credentials');
+        setError('Wrong password');
       } else if (response.status === 404) {
         setError('User not found');
-      } else {
+      } else if (response.status === 403){
+        setError('Please verify your mail before login in')
+      } 
+      
+      else {
         // If it's another error, get the error message from the response
         const errorData = await response.json();
         setError(errorData.message || 'An error occurred, please try again.');
