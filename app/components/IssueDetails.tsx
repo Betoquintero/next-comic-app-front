@@ -12,26 +12,25 @@ const IssueDetails: React.FC<IssueDetailsProps> = ({ image, universe }) => {
   return (
     <>
       <div className="mb-10 flex justify-center">
-      {image ? (
-            <Image
-              src={image}
-              alt={`image`}
-              width={220}
-              height={350}
-              className="rounded-t-lg h-[350px] w-[220px]"
-            />
-          ) : (
-            <Image
-              src="/img/no-image-found.jpg"
-              alt={`image`}
-              width={220}
-              height={350}
-              className="rounded-t-lg h-[350px] w-[220px]"
-            />
-          )}
+        {image ? (
+          <Image
+            src={image}
+            alt={`${universe} comic cover image`}
+            width={220}
+            height={350}
+            className="rounded-t-lg h-[350px] w-[220px]"
+          />
+        ) : (
+          <Image
+            src="/img/no-image-found.jpg"
+            alt="No cover image available"
+            width={220}
+            height={350}
+            className="rounded-t-lg h-[350px] w-[220px]"
+          />
+        )}
       </div>
       <div className="mt-10">
-
       </div>
     </>
   );

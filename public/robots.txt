@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.superheroeslegacy.com
+
+# Sitemaps
+Sitemap: https://www.superheroeslegacy.com/sitemap.xml

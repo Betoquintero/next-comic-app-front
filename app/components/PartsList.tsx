@@ -18,46 +18,42 @@ const PartsList: React.FC<PartsListProps> = ({ parts, universe }) => {
 
   return (
     <div className="p-5 bg-gray-200 rounded-xl shadow-lg">
-      <div className="mb-6 text-2xl font-bold text-gray-800">
-        <strong>Welcome to the {universe} section!</strong>
-      </div>
-      <div className="mb-6 text-lg text-gray-700">
-        Below you will find all of the {universe} parts. Tap on a part to see more details!
-      </div>
+      <header className="mb-6 text-2xl font-bold text-gray-800">
+        <h1>Explore the {universe} Universe</h1>
+      </header>
+      <p className="mb-6 text-lg text-gray-700">
+        Discover key parts of the {universe} universe. Click on a part to see more information and explore further.
+      </p>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {parts.map((part) => (
-          <div
+          <article
             key={part._id}
             className="bg-white rounded-xl p-3 shadow hover:shadow-lg transition-shadow duration-300 cursor-pointer relative"
+            aria-labelledby={`part-title-${part._id}`}
           >
             <Link href={`/parts/${part.universe}/${part._id}`} className="block text-gray-800">
-              <p className="mb-2 text-xl font-semibold text-black">
-                <strong>{part.name}</strong>
-              </p>
+              <h2 id={`part-title-${part._id}`} className="mb-2 text-xl font-semibold text-black">
+                {part.name}
+              </h2>
               <p className="mb-2 text-black">
-                <strong>Years published: </strong>
-                {part.years}
+                <strong>Years published:</strong> {part.years}
               </p>
             </Link>
+
             <p className="text-black">
               {expandedPartId === part._id ? (
                 <>
                   {part.description}
-                  <span
-                    onClick={() => toggleExpand(part._id)}
-                    className="text-blue-500 cursor-pointer ml-2"
-                  >
+                  <span onClick={() => toggleExpand(part._id)} className="text-blue-500 cursor-pointer ml-2">
                     Show less
                   </span>
                 </>
               ) : (
                 <>
                   {part.description.slice(0, 100)}...
-                  <span
-                    onClick={() => toggleExpand(part._id)}
-                    className="text-blue-500 cursor-pointer ml-2"
-                  >
-                    Read more
+                  <span onClick={() => toggleExpand(part._id)} className="text-blue-500 cursor-pointer ml-2">
+                    Read more about {part.name}
                   </span>
                 </>
               )}
@@ -66,10 +62,11 @@ const PartsList: React.FC<PartsListProps> = ({ parts, universe }) => {
             <Link
               href={`/parts/${part.universe}/${part._id}`}
               className="mt-3 inline-flex items-center text-blue-600 font-semibold hover:underline"
+              aria-label={`View details for ${part.name}`}
             >
-              View Details <FiArrowRight className="ml-1" />
+              Explore {part.name} <FiArrowRight className="ml-1" />
             </Link>
-          </div>
+          </article>
         ))}
       </div>
     </div>
