@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuth } from '../context/AuthContext';
 import MixedGrid from '../components/MixedGrid';
 
@@ -8,7 +9,7 @@ const LoginPage = () => {
   const { authenticateUser } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null); // State for error messages
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -25,22 +26,15 @@ const LoginPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-
-        // Pass the token to authenticateUser to store it in the context and cookies
         authenticateUser(data.authToken);
-
-        // Navigate to the user's profile page using their user ID
         router.push(`/profile/${data.userId}`);
       } else if (response.status === 401) {
         setError('Wrong password');
       } else if (response.status === 404) {
         setError('User not found');
-      } else if (response.status === 403){
-        setError('Please verify your mail before login in')
-      } 
-      
-      else {
-        // If it's another error, get the error message from the response
+      } else if (response.status === 403) {
+        setError('Please verify your email before logging in');
+      } else {
         const errorData = await response.json();
         setError(errorData.message || 'An error occurred, please try again.');
       }
@@ -54,7 +48,6 @@ const LoginPage = () => {
       <div className="p-10 bg-gray-300 rounded-xl shadow-lg">
         <h2 className="text-2xl font-bold mb-5 text-gray-800">Login</h2>
         
-        {/* Show error message if there is any */}
         {error && (
           <div className="bg-red-100 text-red-800 p-3 rounded-lg mb-5">
             {error}
@@ -70,7 +63,7 @@ const LoginPage = () => {
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
-                setError(null); // Clear error when user starts typing
+                setError(null);
               }}
               placeholder="Email"
               required
@@ -84,7 +77,7 @@ const LoginPage = () => {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
-                setError(null); // Clear error when user starts typing
+                setError(null);
               }}
               placeholder="Password"
               required
@@ -97,6 +90,13 @@ const LoginPage = () => {
             Login
           </button>
         </form>
+
+        {/* Forgot Password Link */}
+        <div className="mt-4 text-center">
+          <Link href="/forgot-password" className="text-blue-600 hover:underline">
+            Forgot your password?
+          </Link>
+        </div>
       </div>
     </MixedGrid>
   );
