@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import { AuthProvider } from './context/AuthContext'
 import Navbar from '../app/components/NavBar'
 import Footer from '../app/components/Footer'
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Footer />
           </div>
         </AuthProvider>
+        <GoogleAnalytics gaId="G-LJ6RHS9N37" />
       </body>
     </html>
   );
