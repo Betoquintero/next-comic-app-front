@@ -45,9 +45,9 @@ const LoginPage = () => {
 
   return (
     <MixedGrid>
-      <div className="p-10 bg-gray-300 rounded-xl shadow-lg">
-        <h2 className="text-2xl font-bold mb-5 text-gray-800">Login</h2>
-        
+      <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 bg-gray-300 rounded-xl shadow-lg p-10">
+        <h2 className="text-2xl font-bold mb-5 text-gray-800 text-center">Login</h2>
+
         {error && (
           <div className="bg-red-100 text-red-800 p-3 rounded-lg mb-5">
             {error}
@@ -91,7 +91,6 @@ const LoginPage = () => {
           </button>
         </form>
 
-        {/* Forgot Password Link */}
         <div className="mt-4 text-center">
           <Link href="/forgot-password" className="text-blue-600 hover:underline">
             Forgot your password?

@@ -58,7 +58,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* Comic Universe Introduction */}
-      <div className="bg-gray-200 rounded-xl p-4 mb-6 text-justify mx-auto w-full shadow-lg">
+      <div className="bg-gray-200 rounded-xl p-6 sm:p-8 md:p-10 lg:p-12 xl:p-14 mb-6 text-justify mx-auto w-full max-w-5xl shadow-lg">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">Welcome to Super Heroes Legacy</h2>
         <p className="text-gray-800 text-md md:text-base lg:text-lg">
           Super Heroes Legacy is your go-to resource for navigating the worlds of <strong>Marvel</strong> and <strong>DC Comics</strong>. Whether you're a new fan looking for the right starting point or a seasoned reader seeking a complete reading order, we have you covered with curated lists and timelines.
@@ -69,7 +69,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* Collections and Account Prompt */}
-      <div className="bg-gray-200 rounded-xl p-4 mb-6 text-justify mx-auto w-full shadow-lg">
+      <div className="bg-gray-200 rounded-xl p-6 sm:p-8 md:p-10 lg:p-12 xl:p-14 mb-6 text-justify mx-auto w-full max-w-5xl shadow-lg">
         <h3 className="text-xl font-semibold text-gray-800 mb-2">Join the Super Heroes Community</h3>
         <p className="text-gray-800 text-md md:text-base lg:text-lg">
           Sign up to access your personal comic collections and track your reading progress across both Marvel and DC Comics. Become a part of our growing community and share your favorite reading orders with other fans.

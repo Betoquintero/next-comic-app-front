@@ -7,6 +7,7 @@ import ProfileEventCollection from './ProfileEventCollection';
 import { useAuth } from '../context/AuthContext';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 export interface Event {
   _id: string;
   universe: string;
@@ -221,6 +222,22 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
             Delete account
           </button>
         </div>
+      </div>
+
+      {/* New buttons for DC and Marvel sections */}
+      <div className="flex justify-center gap-6 mt-8">
+        <button
+          className="bg-blue-500 text-white rounded-lg px-6 py-3 hover:bg-blue-700 w-48"
+          onClick={() => router.push(`/parts/DC`)}
+        >
+          Go to the DC section
+        </button>
+        <button
+          className="bg-red-600 text-white rounded-lg px-6 py-3 hover:bg-red-800 w-48"
+          onClick={() => router.push(`/parts/MARVEL`)}
+        >
+          Go to the Marvel section
+        </button>
       </div>
 
       <p className="mt-8 text-center text-gray-800">

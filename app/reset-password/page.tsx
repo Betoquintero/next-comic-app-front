@@ -1,5 +1,3 @@
-// pages/reset-password.tsx
-
 'use client';
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -42,8 +40,8 @@ const ResetPasswordPage = () => {
 
   return (
     <MixedGrid>
-      <div className="p-10 bg-gray-300 rounded-xl shadow-lg">
-        <h2 className="text-2xl font-bold mb-5 text-gray-800">Reset Your Password</h2>
+      <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 bg-gray-300 rounded-xl shadow-lg p-10">
+        <h2 className="text-2xl font-bold mb-5 text-gray-800 text-center">Reset Your Password</h2>
 
         {error && <div className="bg-red-100 text-red-800 p-3 rounded-lg mb-5">{error}</div>}
         {success && <div className="bg-green-100 text-green-800 p-3 rounded-lg mb-5">{success}</div>}

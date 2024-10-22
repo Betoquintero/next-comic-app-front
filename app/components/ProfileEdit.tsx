@@ -18,7 +18,7 @@ const ProfileEdit: React.FC = () => {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserData(prev => ({
+    setUserData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
@@ -38,7 +38,7 @@ const ProfileEdit: React.FC = () => {
 
       if (response.ok) {
         toast.success('User edited successfully. Please log in again.', {
-          position: "bottom-center",
+          position: 'bottom-center',
           autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
@@ -49,7 +49,7 @@ const ProfileEdit: React.FC = () => {
         router.push('/login');
       } else {
         toast.error('Failed to update profile. Please try again.', {
-          position: "bottom-center",
+          position: 'bottom-center',
           autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
@@ -60,7 +60,7 @@ const ProfileEdit: React.FC = () => {
     } catch (error) {
       console.error(error);
       toast.error('An error occurred while updating the profile.', {
-        position: "bottom-center",
+        position: 'bottom-center',
         autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -72,7 +72,7 @@ const ProfileEdit: React.FC = () => {
 
   return (
     <MixedGrid>
-      <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 bg-gray-300 rounded-xl shadow-lg p-10">
         <h2 className="text-2xl font-bold mb-5 text-gray-800 text-center">Editing {userData.username}'s profile</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

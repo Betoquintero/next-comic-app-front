@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const authenticateUser = async (token: string) => {
-    Cookies.set('authToken', token);  // Store token in cookies
+    Cookies.set('authToken', token, { secure: true, sameSite: 'strict' });  // Store token in cookies
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
@@ -44,9 +44,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsAuthenticated(true);
       } else {
         console.error('Failed to fetch user data');
+        logoutUser();
       }
     } catch (error) {
       console.error('Failed to authenticate user', error);
+      logoutUser();
     } finally {
       setLoading(false);
     }
