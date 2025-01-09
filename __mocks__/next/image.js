@@ -1,19 +1,8 @@
 import * as React from 'react';
-import Image from 'next/image';
 
-
-const NextImage = ({ src, alt, width, height, objectFit = 'cover' }) => {
-  return (
-    <Image
-      src={src}
-      alt={alt}
-      width={width} 
-      height={height} 
-      style={{
-        objectFit,
-      }}
-    />
-  );
+const NextImage = ({ src, alt }) => {
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={src} alt={alt} />;
 };
 
 export default NextImage;
