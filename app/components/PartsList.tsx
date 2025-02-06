@@ -3,9 +3,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { FiArrowRight } from 'react-icons/fi';
+import { Part } from '../../lib/api';
 
 interface PartsListProps {
-  parts: any[];
+  parts: Part[];
   universe: string;
 }
 
@@ -51,7 +52,7 @@ const PartsList: React.FC<PartsListProps> = ({ parts, universe }) => {
                 </>
               ) : (
                 <>
-                  {part.description.slice(0, 100)}...
+                  {part.description ? part.description.slice(0, 100) : ''}...
                   <span onClick={() => toggleExpand(part._id)} className="text-blue-500 cursor-pointer ml-2">
                     Read more about {part.name}
                   </span>

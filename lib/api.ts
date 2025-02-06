@@ -1,20 +1,31 @@
-export async function getPartsByUniverse(universe: string) {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/parts/${universe}`, {
-        cache: 'no-store',
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Failed to fetch parts for universe: ${universe}`);
-      }
-  
-      const data = await response.json();
-      return data.data;
-    } catch (error) {
-      console.error('Error fetching parts:', error);
-      throw new Error('Could not fetch parts data');
+ export interface Part {
+  _id: string;
+  universe: string;
+  name: string;
+  order?: string;
+  years?: string;
+  events?: string[]; // events Ids
+  issues?: string[]; // Issues Ids
+  description?: string;
+}
+
+export async function getPartsByUniverse(universe: string): Promise<Part[]> {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/parts/${universe}`, {
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch parts for universe: ${universe}`);
     }
+
+    const data = await response.json();
+    return data.data as Part[];
+  } catch (error) {
+    console.error('Error fetching parts:', error);
+    throw new Error('Could not fetch parts data');
   }
+}
 
   export async function getPartDetails(universe: string, id: string) {
     try {

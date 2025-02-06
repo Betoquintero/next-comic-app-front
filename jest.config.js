@@ -8,7 +8,7 @@ module.exports = {
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/', '<rootDir>/babel.config.test.js'],
-  testMatch: [ '**/__test__/**/*.test.tsx'],
+  testMatch: [ '**/__test__/**/*.test.tsx', '**/__test__/**/*.test.ts' ],
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { configFile: './babel.config.test.js' }],
   },

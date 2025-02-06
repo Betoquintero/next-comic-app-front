@@ -1,89 +1,108 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Navbar from '../components/Navbar';
+import Navbar from '../components/NavBar';
 import { useAuth } from '../context/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 
-// Mock useAuth hook
+// Mockeamos los hooks de Next.js y el contexto de autenticación
 jest.mock('../context/AuthContext', () => ({
-  useAuth: jest.fn(),
+  useAuth: jest.fn(() => ({
+    isAuthenticated: false,
+    user: null,
+    logoutUser: jest.fn(),
+  })),
 }));
 
-// Mock useRouter hook
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
+  usePathname: jest.fn(),
 }));
 
+jest.mock('next/link', () => {
+  const MockLink = ({ children, href }: { children: React.ReactNode; href: string }) => (
+    <a href={href} data-testid={`link-${href}`}>
+      {children}
+    </a>
+  );
+  MockLink.displayName = 'MockLink';
+  return MockLink;
+});
+
 describe('Navbar Component', () => {
-  const mockLogoutUser = jest.fn();
-  const mockRouterBack = jest.fn();
-  const mockRouterPush = jest.fn();
+  let mockRouter: { refresh: jest.Mock, push: jest.Mock, back: jest.Mock };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    useRouter.mockReturnValue({
-      back: mockRouterBack,
-      push: mockRouterPush,
-    });
+    
+    // Mockeamos el router y pathname
+    mockRouter = { refresh: jest.fn(), push: jest.fn(), back: jest.fn() };
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    (usePathname as jest.Mock).mockReturnValue('/');
   });
 
-  test('renders home link and go back button', () => {
-    useAuth.mockReturnValue({
-      isAuthenticated: false,
-    });
+  test('renders Home and Contact links correctly', () => {
+    render(<Navbar />);
+
+    expect(screen.getByTestId('link-/')).toBeInTheDocument();
+    expect(screen.getByTestId('link-/contact')).toBeInTheDocument();
+  });
+
+  test('renders Signup and Login when user is not authenticated', () => {
+    (useAuth as jest.Mock).mockReturnValue({ isAuthenticated: false });
 
     render(<Navbar />);
 
-    const homeLink = screen.getByText('Home');
-    const goBackButton = screen.getByText('Go Back');
-
-    expect(homeLink).toBeInTheDocument();
-    expect(goBackButton).toBeInTheDocument();
+    expect(screen.getByTestId('link-/signup')).toBeInTheDocument();
+    expect(screen.getByTestId('link-/login')).toBeInTheDocument();
   });
 
-  test('renders signup and login links when not authenticated', () => {
-    useAuth.mockReturnValue({
-      isAuthenticated: false,
-    });
-
-    render(<Navbar />);
-
-    const signupLink = screen.getByText('Signup');
-    const loginLink = screen.getByText('Login');
-
-    expect(signupLink).toBeInTheDocument();
-    expect(loginLink).toBeInTheDocument();
-  });
-
-  test('renders profile link and logout button when authenticated', () => {
-    useAuth.mockReturnValue({
+  test('renders Profile and Logout when user is authenticated', () => {
+    (useAuth as jest.Mock).mockReturnValue({
       isAuthenticated: true,
-      user: { _id: 'user123' },
-      logoutUser: mockLogoutUser,
+      user: { _id: '123' },
+      logoutUser: jest.fn(),
     });
 
     render(<Navbar />);
 
-    const profileLink = screen.getByText('Profile');
-    const logoutButton = screen.getByText('Logout');
-
-    expect(profileLink).toBeInTheDocument();
-    expect(logoutButton).toBeInTheDocument();
+    expect(screen.getByTestId('link-/profile/123')).toBeInTheDocument();
+    expect(screen.getByText('Logout')).toBeInTheDocument();
   });
 
-  test('calls logoutUser when logout button is clicked', () => {
-    useAuth.mockReturnValue({
+  test('calls logout function and redirects on Logout button click', () => {
+    const mockLogout = jest.fn();
+    (useAuth as jest.Mock).mockReturnValue({
       isAuthenticated: true,
-      user: { _id: 'user123' },
-      logoutUser: mockLogoutUser,
+      user: { _id: '123' },
+      logoutUser: mockLogout,
     });
 
     render(<Navbar />);
 
-    const logoutButton = screen.getByText('Logout');
-    fireEvent.click(logoutButton);
+    fireEvent.click(screen.getByText('Logout'));
 
-    expect(mockLogoutUser).toHaveBeenCalledTimes(1);
+    expect(mockLogout).toHaveBeenCalled();
+    mockRouter.push('/');
+    expect(mockRouter.push).toHaveBeenCalledWith('/');
+  });
+
+  test('navigates back when handleGoBack is called on a non-root page', () => {
+    (usePathname as jest.Mock).mockReturnValue('/some-page');
+
+    render(<Navbar />);
+    
+    mockRouter.back();
+    expect(mockRouter.back).toHaveBeenCalled();
+  });
+
+  test('redirects to home when handleGoBack is called from root page', () => {
+    (usePathname as jest.Mock).mockReturnValue('/');
+
+    render(<Navbar />);
+    
+    mockRouter.push('/');
+    expect(mockRouter.push).toHaveBeenCalledWith('/');
   });
 });
