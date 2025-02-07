@@ -35,9 +35,6 @@ export default async function EventDetailsPage({ params }: EventDetailsPageProps
           <strong>Next Event:</strong> {event.nextEvent}
         </p>
       </div>
-      <div className="text-center mt-10 text-2xl font-bold text-gray-800">
-        <strong>Event Details</strong>
-      </div>
       <div className="flex justify-center mt-6">
         <EventDetails image={event.image} issues={event.issues} universe={event.universe} eventId={event._id} buyOption1={event.buyOption1} buyOption2={event.buyOption2} buyOption3={event.buyOption3} alternateVersion={event.alternateVersion} />
       </div>
