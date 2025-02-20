@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import AdditionalContext from './AditionalContext'
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -11,6 +12,15 @@ interface Issue {
   _id: string;
   name: string;
   image: string;
+}
+
+interface AdditionalContextComic {
+  title: string;
+  description: string;
+  image: string;
+  buyOption1?: string;
+  buyOption2?: string;
+  buyOption3?: string;
 }
 
 interface EventDetailsProps {
@@ -28,6 +38,7 @@ interface EventDetailsProps {
     buyOption2: string;
     buyOption3: string;
   };
+  additionalContext?: AdditionalContextComic[];
 }
 
 const EventDetails: React.FC<EventDetailsProps> = ({
@@ -39,14 +50,16 @@ const EventDetails: React.FC<EventDetailsProps> = ({
   buyOption2,
   buyOption3,
   alternateVersion,
+  additionalContext,
 }) => {
   const { isAuthenticated } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
   const router = useRouter();
 
+  
   const handleAddToCollection = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsAdding(true);
+    setIsAdding(true);    
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/${eventId}`, {
@@ -189,6 +202,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({
           </div>
         )}
       </div>
+        {additionalContext && additionalContext.length > 0 && (
+        <AdditionalContext contextComics={additionalContext} />
+        )}
 
       <div className="text-center mt-10 text-2xl font-bold text-gray-800">
         <strong>Comics that belong to this event</strong>

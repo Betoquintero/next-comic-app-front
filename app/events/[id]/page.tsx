@@ -13,6 +13,7 @@ export default async function EventDetailsPage({ params }: EventDetailsPageProps
   const { id } = params;
   const event = await getEventDetails(id);
 
+  console.log('event', event.additionalContext);
 
   if (!event) {
     return <p className="text-center text-red-500 text-2xl">Event not found</p>;
@@ -36,7 +37,7 @@ export default async function EventDetailsPage({ params }: EventDetailsPageProps
         </p>
       </div>
       <div className="flex justify-center mt-6">
-        <EventDetails image={event.image} issues={event.issues} universe={event.universe} eventId={event._id} buyOption1={event.buyOption1} buyOption2={event.buyOption2} buyOption3={event.buyOption3} alternateVersion={event.alternateVersion} />
+        <EventDetails image={event.image} issues={event.issues} universe={event.universe} eventId={event._id} buyOption1={event.buyOption1} buyOption2={event.buyOption2} buyOption3={event.buyOption3} alternateVersion={event.alternateVersion} additionalContext={event.additionalContext} />
       </div>
     </CustomGrid>
   );
