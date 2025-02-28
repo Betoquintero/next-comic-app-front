@@ -112,8 +112,3 @@ export async function getPartsByUniverse(universe: string): Promise<Part[]> {
   };
   
   
-  
-  
-  
-  
-  

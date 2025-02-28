@@ -13,8 +13,6 @@ export default async function EventDetailsPage({ params }: EventDetailsPageProps
   const { id } = params;
   const event = await getEventDetails(id);
 
-  console.log('event', event.additionalContext);
-
   if (!event) {
     return <p className="text-center text-red-500 text-2xl">Event not found</p>;
   }
