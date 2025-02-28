@@ -4,6 +4,7 @@ import Image from 'next/image';
 interface AdditionalContextComic {
   title: string;
   description: string;
+  relevanceToEvent?: string;
   image: string;
   buyOption1?: string;
   buyOption2?: string;
@@ -39,6 +40,12 @@ const AdditionalContext: React.FC<AdditionalContextProps> = ({ contextComics }) 
             />
             <h3 className="text-lg font-semibold text-center mt-4 text-gray-700">{comic.title}</h3>
             <p className="text-sm text-gray-600 mt-2">{comic.description}</p>
+            {comic.relevanceToEvent && (
+              <div className="mt-3">
+                <h4 className="text-md font-semibold text-gray-700">Relevance to the event</h4>
+                <p className="text-sm text-gray-600">{comic.relevanceToEvent}</p>
+              </div>
+            )}
             <div className="flex flex-col items-center mt-4 space-y-2">
               {comic.buyOption1 && (
                 <a
