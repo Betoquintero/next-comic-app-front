@@ -1,12 +1,12 @@
-'use client';
-import React, { useState } from 'react';
-import AdditionalContext from './AditionalContext'
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '../context/AuthContext';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+"use client";
+import React, { useState } from "react";
+import AdditionalContext from "./AditionalContext";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../context/AuthContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Issue {
   _id: string;
@@ -15,6 +15,7 @@ interface Issue {
 }
 
 interface AdditionalContextComic {
+  type: "before" | "after";
   title: string;
   description: string;
   image: string;
@@ -38,7 +39,8 @@ interface EventDetailsProps {
     buyOption2: string;
     buyOption3: string;
   };
-  additionalContext?: AdditionalContextComic[];
+  additionalContextBefore?: AdditionalContextComic[];
+  additionalContextAfter?: AdditionalContextComic[];
 }
 
 const EventDetails: React.FC<EventDetailsProps> = ({
@@ -50,40 +52,55 @@ const EventDetails: React.FC<EventDetailsProps> = ({
   buyOption2,
   buyOption3,
   alternateVersion,
-  additionalContext,
+  additionalContextBefore = [],
+  additionalContextAfter = [],
 }) => {
   const { isAuthenticated } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
   const router = useRouter();
 
-  
   const handleAddToCollection = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsAdding(true);    
+    setIsAdding(true);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/${eventId}`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/collections/${eventId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${document.cookie.replace(
+              "authToken=",
+              ""
+            )}`,
+          },
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to add event to collection');
+        throw new Error("Failed to add event to collection");
       }
 
       const data = await response.json();
 
       if (data.message === "Event is already on user's collection") {
-        toast.info(data.message, { position: "bottom-center", autoClose: 3000 });
+        toast.info(data.message, {
+          position: "bottom-center",
+          autoClose: 3000,
+        });
       } else {
-        toast.success('Successfully added event to collection', { position: "bottom-center", autoClose: 3000 });
+        toast.success("Successfully added event to collection", {
+          position: "bottom-center",
+          autoClose: 3000,
+        });
       }
 
       router.refresh();
     } catch (error) {
-      toast.error('Failed to add event to collection', { position: "bottom-center", autoClose: 3000 });
+      toast.error("Failed to add event to collection", {
+        position: "bottom-center",
+        autoClose: 3000,
+      });
     } finally {
       setIsAdding(false);
     }
@@ -99,7 +116,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-opacity-80 transition duration-300"
               disabled={isAdding}
             >
-              {isAdding ? 'Adding...' : 'Add Event to My Collection'}
+              {isAdding ? "Adding..." : "Add Event to My Collection"}
             </button>
           </form>
         </div>
@@ -149,7 +166,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({
                 Buy for Kindle
               </a>
             )}
-            {!buyOption1 && !buyOption2 && !buyOption3 && <p>No buy options available for this event.</p>}
+            {!buyOption1 && !buyOption2 && !buyOption3 && (
+              <p>No buy options available for this event.</p>
+            )}
           </div>
         </div>
 
@@ -162,7 +181,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               height={300}
               className="rounded-t-lg h-[300px] w-[200px]"
             />
-            <h2 className="text-3xl font-bold text-gray-800 mt-4">Alternate Version: {alternateVersion.title}</h2>
+            <h2 className="text-3xl font-bold text-gray-800 mt-4">
+              Alternate Version: {alternateVersion.title}
+            </h2>
             <div className="flex flex-col items-center mt-2 space-y-2">
               {alternateVersion.buyOption1 && (
                 <a
@@ -197,14 +218,30 @@ const EventDetails: React.FC<EventDetailsProps> = ({
                   Buy for Kindle
                 </a>
               )}
-              {!alternateVersion.buyOption1 && !alternateVersion.buyOption2 && !alternateVersion.buyOption3 && <p>No alternate buy options available.</p>}
+              {!alternateVersion.buyOption1 &&
+                !alternateVersion.buyOption2 &&
+                !alternateVersion.buyOption3 && (
+                  <p>No alternate buy options available.</p>
+                )}
             </div>
           </div>
         )}
       </div>
-        {additionalContext && additionalContext.length > 0 && (
-        <AdditionalContext contextComics={additionalContext} />
-        )}
+      {(additionalContextBefore?.length > 0 ||
+        additionalContextAfter?.length > 0) && (
+        <AdditionalContext
+          contextComics={[
+            ...(additionalContextBefore?.map((comic) => ({
+              ...comic,
+              type: "before" as "before",
+            })) || []),
+            ...(additionalContextAfter?.map((comic) => ({
+              ...comic,
+              type: "after" as "after",
+            })) || []),
+          ]}
+        />
+      )}
 
       <div className="text-center mt-10 text-2xl font-bold text-gray-800">
         <strong>Comics that belong to this event</strong>
@@ -213,8 +250,15 @@ const EventDetails: React.FC<EventDetailsProps> = ({
       <div className="flex flex-wrap justify-center mt-6 w-full max-w-5xl">
         {issues.length > 0 ? (
           issues.map((issue) => (
-            <article key={issue._id} className="bg-light-grey rounded-lg shadow-md transition-shadow duration-300 hover:shadow-lg m-4 w-[150px]">
-              <Link href={`/issues/${issue._id}`} aria-label={`View details for ${issue.name}`} className="block no-underline text-black">
+            <article
+              key={issue._id}
+              className="bg-light-grey rounded-lg shadow-md transition-shadow duration-300 hover:shadow-lg m-4 w-[150px]"
+            >
+              <Link
+                href={`/issues/${issue._id}`}
+                aria-label={`View details for ${issue.name}`}
+                className="block no-underline text-black"
+              >
                 {issue.image ? (
                   <Image
                     src={issue.image}
@@ -233,7 +277,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({
                   />
                 )}
                 <div className="text-center p-4">
-                  <h4 className="text-sm font-semibold text-black">{issue.name}</h4>
+                  <h4 className="text-sm font-semibold text-black">
+                    {issue.name}
+                  </h4>
                 </div>
               </Link>
             </article>

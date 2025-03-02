@@ -1,7 +1,7 @@
-import React from 'react';
-import CustomGrid from '../../components/CustomGrid';
-import { getEventDetails } from '../../../lib/api';
-import EventDetails from '../../components/EventDetails';
+import React from "react";
+import CustomGrid from "../../components/CustomGrid";
+import { getEventDetails } from "../../../lib/api";
+import EventDetails from "../../components/EventDetails";
 
 interface EventDetailsPageProps {
   params: {
@@ -9,7 +9,9 @@ interface EventDetailsPageProps {
   };
 }
 
-export default async function EventDetailsPage({ params }: EventDetailsPageProps) {
+export default async function EventDetailsPage({
+  params,
+}: EventDetailsPageProps) {
   const { id } = params;
   const event = await getEventDetails(id);
 
@@ -20,7 +22,9 @@ export default async function EventDetailsPage({ params }: EventDetailsPageProps
   return (
     <CustomGrid universe={event.universe}>
       <div className="bg-gray-100 rounded-xl p-6 mb-6 shadow-lg">
-        <h3 className="text-2xl font-bold text-gray-800">Event: {event.name}</h3>
+        <h3 className="text-2xl font-bold text-gray-800">
+          Event: {event.name}
+        </h3>
         <p className="mt-4 text-lg text-gray-700">
           <strong>Year published:</strong> {event.years}
         </p>
@@ -35,7 +39,18 @@ export default async function EventDetailsPage({ params }: EventDetailsPageProps
         </p>
       </div>
       <div className="flex justify-center mt-6">
-        <EventDetails image={event.image} issues={event.issues} universe={event.universe} eventId={event._id} buyOption1={event.buyOption1} buyOption2={event.buyOption2} buyOption3={event.buyOption3} alternateVersion={event.alternateVersion} additionalContext={event.additionalContext} />
+        <EventDetails
+          image={event.image}
+          issues={event.issues}
+          universe={event.universe}
+          eventId={event._id}
+          buyOption1={event.buyOption1}
+          buyOption2={event.buyOption2}
+          buyOption3={event.buyOption3}
+          alternateVersion={event.alternateVersion}
+          additionalContextBefore={event.additionalContextBefore}
+          additionalContextAfter={event.additionalContextAfter}
+        />
       </div>
     </CustomGrid>
   );
