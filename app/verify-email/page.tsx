@@ -34,7 +34,7 @@ export default function VerifyEmailPage() {
           const errorData = await response.json();
           setStatusMessage(errorData.message || 'Verification failed');
         }
-      } catch (error) {
+      } catch {
         setStatusMessage('An error occurred while verifying your email.');
       } finally {
         setIsLoading(false);

@@ -55,8 +55,8 @@ export default function Signup() {
       setTimeout(() => {
         router.push('/login');
       }, 3000);
-    } catch (error: any) {
-      setErrorMessage(error.message);
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Something went wrong');
     } finally {
       setIsSubmitting(false);
     }

@@ -39,7 +39,7 @@ export async function getPartsByUniverse(universe: string): Promise<Part[]> {
   
       const data = await response.json();
       return data.data;
-    } catch (error) {
+    } catch {
       throw new Error('Failed to fetch part details');
     }
   }
@@ -56,7 +56,7 @@ export async function getPartsByUniverse(universe: string): Promise<Part[]> {
   
       const data = await response.json();
       return data.data;
-    } catch (error) {
+    } catch {
       throw new Error('Failed to fetch event details');
     }
   }
@@ -71,23 +71,49 @@ export async function getPartsByUniverse(universe: string): Promise<Part[]> {
   
       const data = await response.json();
       return data.data;
-    } catch (error) {
+    } catch {
       throw new Error('Failed to fetch issue details');
     }
   }
   
-  export async function toggleIssueReadStatus(issueId: string, token: string) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/readStatuses/toggle-read/${issueId}`, {
-      method: 'PATCH',
+  export interface ChatMessage {
+    role: 'user' | 'assistant';
+    content: string;
+  }
+
+  export interface ChatSource {
+    type: 'Issue' | 'Event' | 'Part';
+    name?: string;
+  }
+
+  export interface ChatReply {
+    reply: string;
+    sources: ChatSource[];
+  }
+
+  export async function sendChatMessage(messages: ChatMessage[], token: string): Promise<ChatReply> {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat`, {
+      method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify({ messages }),
     });
+
     if (!response.ok) {
-      throw new Error('Failed to toggle read status');
+      if (response.status === 401) {
+        throw new Error('Your session has expired. Please log in again.');
+      }
+      if (response.status === 429) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error || 'Too many messages sent. Please wait a moment and try again.');
+      }
+      throw new Error('Failed to get a response from the chat assistant');
     }
+
     const data = await response.json();
-    return data.isRead;
+    return data.data as ChatReply;
   }
 
   export const fetchProfileData = async (userId: string, token: string) => {

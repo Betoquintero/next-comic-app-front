@@ -2,7 +2,6 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Footer from '../components/Footer';
-import Link from 'next/link';
 
 // Mockeamos Next.js Link
 jest.mock('next/link', () => {

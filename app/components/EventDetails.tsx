@@ -96,7 +96,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
       }
 
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Failed to add event to collection", {
         position: "bottom-center",
         autoClose: 3000,
@@ -233,11 +233,11 @@ const EventDetails: React.FC<EventDetailsProps> = ({
           contextComics={[
             ...(additionalContextBefore?.map((comic) => ({
               ...comic,
-              type: "before" as "before",
+              type: "before" as const,
             })) || []),
             ...(additionalContextAfter?.map((comic) => ({
               ...comic,
-              type: "after" as "after",
+              type: "after" as const,
             })) || []),
           ]}
         />

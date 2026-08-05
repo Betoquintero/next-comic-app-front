@@ -4,7 +4,6 @@ import '@testing-library/jest-dom';
 import Navbar from '../components/NavBar';
 import { useAuth } from '../context/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
-import Link from 'next/link';
 
 // Mockeamos los hooks de Next.js y el contexto de autenticación
 jest.mock('../context/AuthContext', () => ({
@@ -49,6 +48,14 @@ describe('Navbar Component', () => {
     expect(screen.getByTestId('link-/contact')).toBeInTheDocument();
   });
 
+  test('renders Chat link correctly', () => {
+    render(<Navbar />);
+
+    const chatLink = screen.getByTestId('link-/chat');
+    expect(chatLink).toBeInTheDocument();
+    expect(chatLink).toHaveAttribute('href', '/chat');
+  });
+
   test('renders Signup and Login when user is not authenticated', () => {
     (useAuth as jest.Mock).mockReturnValue({ isAuthenticated: false });
 
@@ -84,24 +91,6 @@ describe('Navbar Component', () => {
     fireEvent.click(screen.getByText('Logout'));
 
     expect(mockLogout).toHaveBeenCalled();
-    mockRouter.push('/');
-    expect(mockRouter.push).toHaveBeenCalledWith('/');
-  });
-
-  test('navigates back when handleGoBack is called on a non-root page', () => {
-    (usePathname as jest.Mock).mockReturnValue('/some-page');
-
-    render(<Navbar />);
-    
-    mockRouter.back();
-    expect(mockRouter.back).toHaveBeenCalled();
-  });
-
-  test('redirects to home when handleGoBack is called from root page', () => {
-    (usePathname as jest.Mock).mockReturnValue('/');
-
-    render(<Navbar />);
-    
     mockRouter.push('/');
     expect(mockRouter.push).toHaveBeenCalledWith('/');
   });

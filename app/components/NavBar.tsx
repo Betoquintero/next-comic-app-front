@@ -1,22 +1,13 @@
 'use client';
 
 import React from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
 import Link from 'next/link';
 
 const Navbar: React.FC = () => {
   const { isAuthenticated, user, logoutUser } = useAuth();
   const router = useRouter();
-  const pathname = usePathname();
-
-  const handleGoBack = () => {
-    if (pathname !== '/') {
-      router.back();
-    } else {
-      router.push('/');
-    }
-  };
 
   const handleLogout = async () => {
     await logoutUser();
@@ -33,6 +24,10 @@ const Navbar: React.FC = () => {
         <div className="flex space-x-4">
           <Link href="/contact" className="text-lg font-semibold hover:text-gray-400">
             Contact
+          </Link>
+
+          <Link href="/chat" className="text-lg font-semibold hover:text-gray-400">
+            Chat
           </Link>
 
           {!isAuthenticated && (
@@ -53,7 +48,7 @@ const Navbar: React.FC = () => {
             </>
           )}
 
-          {isAuthenticated && (
+          {isAuthenticated && user && (
             <>
               <Link
                 href={`/profile/${user._id}`}

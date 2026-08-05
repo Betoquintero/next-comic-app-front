@@ -36,7 +36,7 @@ interface UserData {
 }
 
 const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
-  const { user, authenticateUser, logoutUser } = useAuth();
+  const { user, logoutUser } = useAuth();
   const router = useRouter();
 
   const [collection, setCollection] = useState({
@@ -115,8 +115,8 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
           pauseOnHover: true,
           draggable: true,
         });
-      }     
-    } catch (error) {
+      }
+    } catch {
       toast.error('An error occurred while deleting the account', {
         position: "bottom-center",
         autoClose: 3000,

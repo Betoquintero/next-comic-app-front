@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import MixedGrid from '../components/MixedGrid';
 
@@ -33,7 +33,7 @@ const ResetPasswordPage = () => {
         const data = await response.json();
         setError(data.message || 'Failed to reset password.');
       }
-    } catch (error) {
+    } catch {
       setError('An error occurred. Please try again later.');
     }
   };

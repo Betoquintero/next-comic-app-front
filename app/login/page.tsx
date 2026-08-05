@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '../context/AuthContext';
@@ -38,7 +38,7 @@ const LoginPage = () => {
         const errorData = await response.json();
         setError(errorData.message || 'An error occurred, please try again.');
       }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred. Please try again later.');
     }
   };

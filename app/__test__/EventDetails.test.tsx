@@ -229,6 +229,114 @@ describe('EventDetails Component', () => {
 
   });
 
+  test('renders the Amazon US and Kindle buy options for the main event when provided', () => {
+    render(
+      <EventDetails
+        image="/event.jpg"
+        issues={mockIssues}
+        universe="Marvel"
+        eventId="event1"
+        buyOption2="https://amazon.com/event-us"
+        buyOption3="https://amazon.com/event-kindle"
+      />
+    );
+
+    expect(screen.getByRole('link', { name: /buy event on amazon us/i })).toHaveAttribute(
+      'href',
+      'https://amazon.com/event-us'
+    );
+    expect(screen.getByRole('link', { name: /buy event for kindle/i })).toHaveAttribute(
+      'href',
+      'https://amazon.com/event-kindle'
+    );
+  });
+
+  test('shows a fallback message when the alternate version has no buy options', () => {
+    render(
+      <EventDetails
+        image="/event.jpg"
+        issues={mockIssues}
+        universe="Marvel"
+        eventId="event1"
+        alternateVersion={{ title: 'Alternate Event', image: '/alternate.jpg', buyOption1: '', buyOption2: '', buyOption3: '' }}
+      />
+    );
+
+    expect(screen.getByText('No alternate buy options available.')).toBeInTheDocument();
+  });
+
+  test('renders a placeholder image when an issue has no cover image', () => {
+    render(
+      <EventDetails
+        image="/event.jpg"
+        issues={[{ _id: '1', name: 'Issue 1', image: '' }]}
+        universe="Marvel"
+        eventId="event1"
+      />
+    );
+
+    expect(screen.getByAltText('No cover image available')).toHaveAttribute('src', '/img/no-image-found.jpg');
+  });
+
+  test('renders only the "before" context comics when no "after" comics are provided', () => {
+    render(
+      <EventDetails
+        image="/event.jpg"
+        issues={mockIssues}
+        universe="Marvel"
+        eventId="event1"
+        additionalContextBefore={[
+          { type: 'before', title: 'Before Comic', description: 'Read this first.', image: '/before.jpg' },
+        ]}
+      />
+    );
+
+    expect(screen.getByText('Before Comic')).toBeInTheDocument();
+  });
+
+  test('renders only the "after" context comics when no "before" comics are provided', () => {
+    render(
+      <EventDetails
+        image="/event.jpg"
+        issues={mockIssues}
+        universe="Marvel"
+        eventId="event1"
+        additionalContextAfter={[
+          { type: 'after', title: 'After Comic', description: 'Read this after.', image: '/after.jpg' },
+        ]}
+      />
+    );
+
+    expect(screen.getByText('After Comic')).toBeInTheDocument();
+  });
+
+  test('renders additional context comics when provided', () => {
+    render(
+      <EventDetails
+        image="/event.jpg"
+        issues={mockIssues}
+        universe="Marvel"
+        eventId="event1"
+        additionalContextBefore={[
+          { type: 'before', title: 'Before Comic', description: 'Read this first.', image: '/before.jpg' },
+        ]}
+        additionalContextAfter={[
+          { type: 'after', title: 'After Comic', description: 'Read this after.', image: '/after.jpg' },
+        ]}
+      />
+    );
+
+    expect(screen.getByText('Additional Context')).toBeInTheDocument();
+    expect(screen.getByText('Before Comic')).toBeInTheDocument();
+    expect(screen.getByText('After Comic')).toBeInTheDocument();
+  });
+
+  test('does not render additional context when none is provided', () => {
+    render(<EventDetails image="/event.jpg" issues={mockIssues} universe="Marvel" eventId="event1" />);
+
+    expect(screen.queryByText('Additional Context')).not.toBeInTheDocument();
+  });
+
   test('all buy links have correct accessibility attributes', () => {
     render(<EventDetails image="/event.jpg" issues={mockIssues} universe="Marvel" eventId="event1" buyOption1="https://amazon.com/event" />);
 

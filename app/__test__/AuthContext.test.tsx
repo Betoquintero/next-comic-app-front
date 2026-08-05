@@ -55,11 +55,11 @@ describe('AuthContext', () => {
   });
 
   test('authenticates user when a token is provided', async () => {
-    (global as any).fetch = jest.fn(() =>
+    global.fetch = jest.fn(() =>
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve({ username: 'testuser' }),
-      })
+      } as unknown as Response)
     );
 
     render(
@@ -99,11 +99,11 @@ describe('AuthContext', () => {
   test('fetches user from stored token on mount', async () => {
     (Cookies.get as jest.Mock).mockReturnValue('existing-token');
 
-    (global as any).fetch = jest.fn(() =>
+    global.fetch = jest.fn(() =>
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve({ username: 'persistedUser' }),
-      })
+      } as unknown as Response)
     );
 
     render(
@@ -121,10 +121,10 @@ describe('AuthContext', () => {
   test('logs out user if token fetch fails', async () => {
     (Cookies.get as jest.Mock).mockReturnValue('invalid-token');
 
-    (global as any).fetch = jest.fn(() =>
+    global.fetch = jest.fn(() =>
       Promise.resolve({
         ok: false,
-      })
+      } as unknown as Response)
     );
 
     render(

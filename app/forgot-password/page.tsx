@@ -29,7 +29,7 @@ const ForgotPasswordPage = () => {
         const errorData = await response.json();
         setError(errorData.message || 'Failed to send reset link, please try again.');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again later.');
     } finally {
       setIsSubmitting(false);
