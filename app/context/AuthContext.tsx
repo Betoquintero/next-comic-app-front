@@ -3,6 +3,9 @@
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { refreshAccessToken, logout as logoutRequest } from '../../lib/api';
+
+const ACCESS_TOKEN_LIFETIME_MS = 15 * 60 * 1000;
 
 export interface User {
   _id: string;
@@ -15,6 +18,7 @@ interface AuthContextType {
   authenticateUser: (token: string) => void;  // Accept token as a parameter
   logoutUser: () => void;
   user: User | null;
+  authenticatedFetch: (path: string, init?: RequestInit) => Promise<Response>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -34,15 +38,57 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const authenticateUser = async (token: string) => {
-    Cookies.set('authToken', token, { secure: true, sameSite: 'strict' });  // Store token in cookies
+  const persistToken = (token: string) => {
+    Cookies.set('authToken', token, {
+      secure: true,
+      sameSite: 'strict',
+      expires: new Date(Date.now() + ACCESS_TOKEN_LIFETIME_MS),
+    });
+  };
 
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+  // Shared by authenticateUser (mount-time / post-login check) and
+  // authenticatedFetch (everything else): attaches the token, and on a 401
+  // tries one silent refresh-and-retry. `refreshFailed: true` means a 401
+  // was hit AND the refresh didn't recover it, so the caller should treat
+  // this as a real logout rather than just a failed request.
+  const fetchWithRefresh = async (
+    path: string,
+    token: string | undefined,
+    init: RequestInit = {}
+  ): Promise<{ response: Response; refreshFailed: boolean }> => {
+    const doFetch = (t: string | undefined) =>
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}${path}`, {
+        ...init,
         headers: {
-          Authorization: `Bearer ${token}`,
+          ...init.headers,
+          Authorization: `Bearer ${t ?? ''}`,
         },
       });
+
+    const response = await doFetch(token);
+    if (response.status !== 401) {
+      return { response, refreshFailed: false };
+    }
+
+    const newToken = await refreshAccessToken();
+    if (!newToken) {
+      return { response, refreshFailed: true };
+    }
+
+    persistToken(newToken);
+    return { response: await doFetch(newToken), refreshFailed: false };
+  };
+
+  const authenticateUser = async (token: string) => {
+    persistToken(token);
+
+    try {
+      const { response, refreshFailed } = await fetchWithRefresh('/auth/me', token);
+
+      if (refreshFailed) {
+        logoutUser();
+        return;
+      }
 
       if (response.ok) {
         const userData = await response.json();
@@ -61,10 +107,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logoutUser = async () => {
+    await logoutRequest(); // Best-effort: revokes the refresh token server-side
     Cookies.remove('authToken');
     setUser(null);
     setIsAuthenticated(false);
     router.push('/login');
+  };
+
+  // Drop-in replacement for `fetch` against the API: attaches the access
+  // token and, on a 401, tries one silent refresh-and-retry before giving up.
+  const authenticatedFetch = async (path: string, init: RequestInit = {}): Promise<Response> => {
+    const { response, refreshFailed } = await fetchWithRefresh(path, Cookies.get('authToken'), init);
+
+    if (refreshFailed) {
+      logoutUser();
+    }
+
+    return response;
   };
 
   if (loading) {
@@ -78,6 +137,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         authenticateUser,
         logoutUser,
         user,
+        authenticatedFetch,
       }}
     >
       {children}

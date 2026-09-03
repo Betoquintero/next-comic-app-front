@@ -9,7 +9,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ProfileEdit: React.FC = () => {
-  const { user, logoutUser } = useAuth();
+  const { user, logoutUser, authenticatedFetch } = useAuth();
   const router = useRouter();
   const [userData, setUserData] = useState({
     username: user?.username || '',
@@ -27,11 +27,10 @@ const ProfileEdit: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/edit`, {
+      const response = await authenticatedFetch('/user/edit', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
         },
         body: JSON.stringify(userData),
       });

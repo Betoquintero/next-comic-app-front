@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../context/AuthContext';
-import { sendChatMessage, ChatMessage, ChatSource } from '../../lib/api';
+import { assertChatResponseOk, parseChatStream, ChatMessage, ChatSource } from '../../lib/api';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -17,7 +17,7 @@ const WELCOME_MESSAGE =
   'Ask me what to read next — e.g. "I loved Infinity Gauntlet, what should I read next without spoilers for Secret Wars?"';
 
 const ChatWindow: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, authenticatedFetch } = useAuth();
   const [messages, setMessages] = useState<DisplayMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -33,14 +33,48 @@ const ChatWindow: React.FC = () => {
     setInput('');
     setIsLoading(true);
 
+    let assistantMessageStarted = false;
+
+    const appendDelta = (text: string) => {
+      // Flip the flag synchronously here, not inside the setState updater
+      // below — React may defer calling that updater, so code right after
+      // parseChatStream resolves would still see the stale `false`.
+      const isFirstDelta = !assistantMessageStarted;
+      assistantMessageStarted = true;
+
+      setMessages((prev) => {
+        if (isFirstDelta) {
+          return [...prev, { role: 'assistant', content: text }];
+        }
+        const next = [...prev];
+        const last = next[next.length - 1];
+        next[next.length - 1] = { ...last, content: last.content + text };
+        return next;
+      });
+    };
+
     try {
-      const token = document.cookie.replace('authToken=', '');
       const historyToSend: ChatMessage[] = updatedMessages
         .slice(-MAX_HISTORY)
         .map(({ role, content }) => ({ role, content }));
 
-      const { reply, sources } = await sendChatMessage(historyToSend, token);
-      setMessages((prev) => [...prev, { role: 'assistant', content: reply, sources }]);
+      const response = await authenticatedFetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: historyToSend }),
+      });
+
+      await assertChatResponseOk(response);
+
+      const { sources } = await parseChatStream(response, appendDelta);
+
+      if (assistantMessageStarted) {
+        setMessages((prev) => {
+          const next = [...prev];
+          next[next.length - 1] = { ...next[next.length - 1], sources };
+          return next;
+        });
+      }
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : 'Failed to get a response from the chat assistant',
@@ -100,7 +134,7 @@ const ChatWindow: React.FC = () => {
             )}
           </div>
         ))}
-        {isLoading && (
+        {isLoading && messages[messages.length - 1]?.role !== 'assistant' && (
           <div className="flex flex-col items-start">
             <div className="rounded-lg px-4 py-2 bg-light-grey text-gray-800 italic">Thinking...</div>
           </div>

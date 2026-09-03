@@ -36,7 +36,7 @@ interface UserData {
 }
 
 const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
-  const { user, logoutUser } = useAuth();
+  const { user, logoutUser, authenticatedFetch } = useAuth();
   const router = useRouter();
 
   const [collection, setCollection] = useState({
@@ -53,11 +53,8 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
 
   const fetchReadStatuses = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/readStatuses`, {
+      const response = await authenticatedFetch('/readStatuses', {
         method: 'GET',
-        headers: {
-          Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
-        },
       });
   
       if (response.ok) {
@@ -85,11 +82,8 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
 
   const deleteAccount = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/profile/delete/${user?._id}`, {
+      const response = await authenticatedFetch(`/profile/delete/${user?._id}`, {
         method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
-        },
       });
 
       if (response.ok) {
@@ -137,11 +131,8 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
 
   const deleteEventFromCollection = async (eventId: string) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/delete-event/${eventId}`, {
+      const response = await authenticatedFetch(`/collections/delete-event/${eventId}`, {
         method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
-        },
       });
 
       if (response.ok) {
@@ -173,11 +164,8 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
 
   const toggleReadStatus = async (issueId: string) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/readStatuses/toggle-read/${issueId}`, {
+      const response = await authenticatedFetch(`/readStatuses/toggle-read/${issueId}`, {
         method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${document.cookie.replace('authToken=', '')}`,
-        },
       });
 
       if (response.ok) {

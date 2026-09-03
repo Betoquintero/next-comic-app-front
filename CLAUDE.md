@@ -9,7 +9,12 @@ de Tech Lead).
 
 ## Stack actual
 - Next.js + TypeScript
-- Tests unitarios con Jest (ya implementado)
+- Tests unitarios con Jest — **[2026-08-06]** 21 suites / 159 tests, ~99%
+  líneas / ~96% ramas en componentes, contexto, `lib/api.ts` y las páginas de
+  auth (antes: `lib/api.ts` al 0%, varias páginas de auth sin ningún test)
+- TypeScript estricto real: sin `any` en código de producción, ESLint con
+  `next/typescript` activo (antes solo `next/core-web-vitals`, no pillaba
+  `any` ni variables sin usar)
 - Desplegado antes en Vercel, actualmente caído
 
 ## Stack objetivo
@@ -29,13 +34,35 @@ con MongoDB, JWT (añadiendo refresh tokens), y una capa de IA con RAG sobre
 MongoDB Atlas Vector Search. Ver roadmap completo en CLAUDE.md del backend.
 
 ## Roadmap relevante para este repo
-- E2E con Playwright: fase de Oct-Nov (junto con testing backend)
+- E2E con Playwright: fase de Oct-Nov (junto con testing backend). El flujo
+  crítico (registro → login → marcar cómic como leído → guardar colección)
+  ya tiene red de seguridad a nivel unitario desde 2026-08-06 (ver abajo),
+  así que Playwright en Oct-Nov se apoya sobre una base ya sólida en vez de
+  partir de cero
 - UI del chat RAG: en paralelo a la fase de IA del backend (Agosto-Sept) —
   frontend completado 2026-08-05 (página `/chat`, componente `ChatWindow`,
   `sendChatMessage` en `lib/api.ts`, tests en Jest). Falta que el backend
   despliegue `/chat` (bloqueado por límites de cuota) para probar end-to-end
 - Re-despliegue: depende de la decisión de infra del backend (VPS+k3s vs
   Vercel+Railway), fase Sept-Oct
+
+## Limpieza técnica reciente [2026-08-06]
+Auditoría y arreglo del estado de testing/TypeScript en todo el repo, en
+paralelo mientras el backend RAG estaba bloqueado por cuota:
+- Cobertura de tests: `lib/api.ts` (0%→100%), las 5 páginas de auth
+  (0%→100%), `ProfileView.tsx` (61%→100%), `AditionalContext.tsx`
+  (10%→100%), `EventDetails.tsx` (91%→100% líneas / 95% ramas)
+- Código muerto eliminado: rutas API huérfanas en `app/pages/api/auth/*`
+  (nunca se ejecutaban, tenían un login sin validar contraseña — riesgo de
+  mala impresión en una entrevista técnica), `lib/auth.ts` (`withAuth` sin
+  usar), `toggleIssueReadStatus` en `lib/api.ts` (duplicado, la lógica real
+  vive inline en `ProfileView.tsx`), 2 tests huérfanos en `Navbar.test.tsx`
+  que no probaban nada real
+- Bug real encontrado vía tests: `login/page.tsx` y `reset-password/page.tsx`
+  no importaban `React` — funcionaba en producción (runtime automático de
+  Next) pero rompía bajo Babel en tests. Corregido
+- `package.json`: quitadas dependencias `cookies` y `jsonwebtoken` (y sus
+  `@types`), ya sin uso tras borrar las rutas API huérfanas
 
 ## Convenciones de trabajo con Claude Code
 - El desarrollador dispone de ~2-3 noches/semana, pocas horas cada una: preferir

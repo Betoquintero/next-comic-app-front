@@ -92,6 +92,7 @@ describe('ProfileView Component', () => {
     (useAuth as jest.Mock).mockReturnValue({
       user: { _id: '123', username: 'testuser' },
       logoutUser: mockLogoutUser,
+      authenticatedFetch: jest.fn((url: string, init?: RequestInit) => global.fetch(url, init)),
     });
 
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
@@ -134,7 +135,10 @@ describe('ProfileView Component', () => {
   });
 
   test('shows loading message when user is not available', async () => {
-    (useAuth as jest.Mock).mockReturnValue({ user: null });
+    (useAuth as jest.Mock).mockReturnValue({
+      user: null,
+      authenticatedFetch: jest.fn((url: string, init?: RequestInit) => global.fetch(url, init)),
+    });
 
     await renderAndWaitForMount();
 

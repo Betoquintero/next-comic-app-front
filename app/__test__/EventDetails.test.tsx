@@ -48,7 +48,10 @@ describe('EventDetails Component', () => {
     jest.clearAllMocks();
     
     // Mockeamos autenticación
-    (useAuth as jest.Mock).mockReturnValue({ isAuthenticated: true });
+    (useAuth as jest.Mock).mockReturnValue({
+      isAuthenticated: true,
+      authenticatedFetch: jest.fn((url: string, init?: RequestInit) => global.fetch(url, init)),
+    });
 
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     mockRouter = { refresh: jest.fn() };

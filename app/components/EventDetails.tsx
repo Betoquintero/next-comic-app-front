@@ -55,7 +55,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
   additionalContextBefore = [],
   additionalContextAfter = [],
 }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, authenticatedFetch } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
   const router = useRouter();
 
@@ -64,18 +64,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({
     setIsAdding(true);
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/collections/${eventId}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${document.cookie.replace(
-              "authToken=",
-              ""
-            )}`,
-          },
-        }
-      );
+      const response = await authenticatedFetch(`/collections/${eventId}`, {
+        method: "POST",
+      });
 
       if (!response.ok) {
         throw new Error("Failed to add event to collection");

@@ -36,6 +36,7 @@ let mockRouter: { push: jest.Mock };
     (useAuth as jest.Mock).mockReturnValue({
       user: { username: 'testuser', email: 'testuser@example.com' },
       logoutUser: mockLogoutUser,
+      authenticatedFetch: jest.fn((url: string, init?: RequestInit) => global.fetch(url, init)),
     });
 
     (useRouter as jest.Mock).mockReturnValue(mockRouter);

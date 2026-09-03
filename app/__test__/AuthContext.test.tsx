@@ -18,17 +18,27 @@ jest.mock('next/navigation', () => ({
 
 // Componente de prueba para acceder al contexto
 const TestComponent = () => {
-  const { isAuthenticated, authenticateUser, logoutUser, user } = useAuth();
+  const { isAuthenticated, authenticateUser, logoutUser, user, authenticatedFetch } = useAuth();
+  const [fetchResult, setFetchResult] = React.useState<string | null>(null);
+
+  const runFetch = async () => {
+    const response = await authenticatedFetch('/some-protected-route');
+    setFetchResult(`status:${response.status}`);
+  };
 
   return (
     <div>
       <p data-testid="auth-status">{isAuthenticated ? 'Authenticated' : 'Not Authenticated'}</p>
       <p data-testid="user">{user ? user.username : 'No User'}</p>
+      <p data-testid="fetch-result">{fetchResult ?? 'No Result'}</p>
       <button onClick={() => authenticateUser('mock-token')} data-testid="login-button">
         Login
       </button>
       <button onClick={logoutUser} data-testid="logout-button">
         Logout
+      </button>
+      <button onClick={runFetch} data-testid="fetch-button">
+        Fetch
       </button>
     </div>
   );
@@ -73,13 +83,21 @@ describe('AuthContext', () => {
     });
 
     await waitFor(() => {
-      expect(Cookies.set).toHaveBeenCalledWith('authToken', 'mock-token', { secure: true, sameSite: 'strict' });
+      expect(Cookies.set).toHaveBeenCalledWith(
+        'authToken',
+        'mock-token',
+        expect.objectContaining({ secure: true, sameSite: 'strict', expires: expect.any(Date) })
+      );
       expect(screen.getByTestId('auth-status')).toHaveTextContent('Authenticated');
       expect(screen.getByTestId('user')).toHaveTextContent('testuser');
     });
   });
 
-  test('logs out user and clears authentication', () => {
+  test('logs out user, revokes the session server-side, and clears local authentication', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({ ok: true, json: () => Promise.resolve({ message: 'Logged out successfully' }) } as unknown as Response)
+    );
+
     render(
       <AuthProvider>
         <TestComponent />
@@ -90,10 +108,16 @@ describe('AuthContext', () => {
       fireEvent.click(screen.getByTestId('logout-button'));
     });
 
-    expect(Cookies.remove).toHaveBeenCalledWith('authToken');
-    expect(screen.getByTestId('auth-status')).toHaveTextContent('Not Authenticated');
-    expect(screen.getByTestId('user')).toHaveTextContent('No User');
-    expect(mockRouter.push).toHaveBeenCalledWith('/login');
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/auth/logout'),
+        expect.objectContaining({ method: 'POST', credentials: 'include' })
+      );
+      expect(Cookies.remove).toHaveBeenCalledWith('authToken');
+      expect(screen.getByTestId('auth-status')).toHaveTextContent('Not Authenticated');
+      expect(screen.getByTestId('user')).toHaveTextContent('No User');
+      expect(mockRouter.push).toHaveBeenCalledWith('/login');
+    });
   });
 
   test('fetches user from stored token on mount', async () => {
@@ -137,6 +161,154 @@ describe('AuthContext', () => {
       expect(Cookies.remove).toHaveBeenCalledWith('authToken');
       expect(screen.getByTestId('auth-status')).toHaveTextContent('Not Authenticated');
       expect(screen.getByTestId('user')).toHaveTextContent('No User');
+    });
+  });
+
+  test('refreshes silently on mount when the stored access token has expired, instead of logging out', async () => {
+    // Reproduces a real bug found testing against the live backend: a page
+    // reload with an expired access token but a still-valid refresh cookie
+    // was bouncing straight to logout instead of refreshing, because the
+    // mount-time /auth/me check didn't go through the same refresh-and-retry
+    // path as authenticatedFetch.
+    (Cookies.get as jest.Mock).mockReturnValue('expired-token');
+
+    let meCalls = 0;
+    global.fetch = jest.fn((url: RequestInfo | URL) => {
+      if (String(url).includes('/auth/refresh-token')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ authToken: 'new-token' }),
+        } as unknown as Response);
+      }
+
+      meCalls += 1;
+      const isFirstAttempt = meCalls === 1;
+      return Promise.resolve({
+        status: isFirstAttempt ? 401 : 200,
+        ok: !isFirstAttempt,
+        json: () => Promise.resolve({ username: 'refreshedUser' }),
+      } as unknown as Response);
+    });
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auth-status')).toHaveTextContent('Authenticated');
+      expect(screen.getByTestId('user')).toHaveTextContent('refreshedUser');
+    });
+    expect(meCalls).toBe(2);
+    expect(Cookies.remove).not.toHaveBeenCalled();
+  });
+
+  test('logs out on mount when the stored access token is expired and the refresh also fails', async () => {
+    (Cookies.get as jest.Mock).mockReturnValue('expired-token');
+
+    global.fetch = jest.fn((url: RequestInfo | URL) => {
+      if (String(url).includes('/auth/refresh-token')) {
+        return Promise.resolve({ ok: false, status: 401 } as unknown as Response);
+      }
+      return Promise.resolve({ status: 401, ok: false } as unknown as Response);
+    });
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    );
+
+    await waitFor(() => {
+      expect(Cookies.remove).toHaveBeenCalledWith('authToken');
+      expect(screen.getByTestId('auth-status')).toHaveTextContent('Not Authenticated');
+      expect(mockRouter.push).toHaveBeenCalledWith('/login');
+    });
+  });
+
+  describe('authenticatedFetch', () => {
+    beforeEach(() => {
+      // `clearAllMocks` doesn't reset a `mockReturnValue` left over from an
+      // earlier test, so pin this explicitly: no stored token means the
+      // mount-time authenticateUser effect skips its fetch and `loading`
+      // resolves synchronously. authenticatedFetch reads the cookie fresh
+      // on each call regardless, so these tests don't depend on a token
+      // being present at mount.
+      (Cookies.get as jest.Mock).mockReturnValue(undefined);
+    });
+
+    test('returns the response directly when the request succeeds', async () => {
+      global.fetch = jest.fn(() => Promise.resolve({ status: 200, ok: true } as unknown as Response));
+
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      fireEvent.click(screen.getByTestId('fetch-button'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('fetch-result')).toHaveTextContent('status:200');
+      });
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+    });
+
+    test('refreshes the token and retries once on a 401, returning the retried response', async () => {
+      let protectedRouteCalls = 0;
+      global.fetch = jest.fn((url: RequestInfo | URL) => {
+        if (String(url).includes('/auth/refresh-token')) {
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({ authToken: 'new-token' }),
+          } as unknown as Response);
+        }
+
+        protectedRouteCalls += 1;
+        const isFirstAttempt = protectedRouteCalls === 1;
+        return Promise.resolve({ status: isFirstAttempt ? 401 : 200, ok: !isFirstAttempt } as unknown as Response);
+      });
+
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      fireEvent.click(screen.getByTestId('fetch-button'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('fetch-result')).toHaveTextContent('status:200');
+      });
+      expect(protectedRouteCalls).toBe(2);
+      expect(Cookies.set).toHaveBeenCalledWith(
+        'authToken',
+        'new-token',
+        expect.objectContaining({ secure: true, sameSite: 'strict', expires: expect.any(Date) })
+      );
+    });
+
+    test('logs the user out when the refresh fails after a 401', async () => {
+      global.fetch = jest.fn((url: RequestInfo | URL) => {
+        if (String(url).includes('/auth/refresh-token')) {
+          return Promise.resolve({ ok: false, status: 401 } as unknown as Response);
+        }
+        return Promise.resolve({ status: 401, ok: false } as unknown as Response);
+      });
+
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      fireEvent.click(screen.getByTestId('fetch-button'));
+
+      await waitFor(() => {
+        expect(Cookies.remove).toHaveBeenCalledWith('authToken');
+        expect(mockRouter.push).toHaveBeenCalledWith('/login');
+      });
     });
   });
 });
