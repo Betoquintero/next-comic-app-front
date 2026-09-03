@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import MixedGrid from '../components/MixedGrid';
 
 const PrivacyPolicy: React.FC = () => {
@@ -10,7 +11,7 @@ const PrivacyPolicy: React.FC = () => {
         </h1>
 
         <p className="text-gray-800 mb-4">
-          At Super Heroes Legacy, accessible from https://www.superheroeslegacy.com, the privacy of our users is of utmost importance to us.
+          At Super Heroes Legacy, accessible from https://houseofheroes.dev, the privacy of our users is of utmost importance to us.
           This Privacy Policy outlines the types of information we collect and how it is used. By using our app, you agree to the practices
           described in this policy.
         </p>
@@ -105,7 +106,7 @@ const PrivacyPolicy: React.FC = () => {
           </li>
         </ul>
         <p className="text-gray-800 mb-4">
-          To exercise these rights, please contact us at contact@superheroeslegacy.com.
+          To exercise these rights, please <Link href="/contact" className="text-blue-600 hover:underline">contact us</Link>.
         </p>
 
         <h2 className="text-2xl font-bold mt-6 mb-4 text-black">7. Retention of Information</h2>
@@ -128,8 +129,8 @@ const PrivacyPolicy: React.FC = () => {
 
         <h2 className="text-2xl font-bold mt-6 mb-4 text-black">10. Contact Us</h2>
         <p className="text-gray-800 mb-4">
-          If you have any questions or concerns about this Privacy Policy, please contact us at 
-          <a href="mailto:contact@superheroeslegacy.com" className="text-blue-600 hover:underline"> contact@superheroeslegacy.com</a>.
+          If you have any questions or concerns about this Privacy Policy, please{' '}
+          <Link href="/contact" className="text-blue-600 hover:underline">contact us</Link>.
         </p>
       </div>
     </MixedGrid>

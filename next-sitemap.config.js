@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-    siteUrl: 'https://www.superheroeslegacy.com',
+    siteUrl: 'https://houseofheroes.dev',
     generateRobotsTxt: true,
     exclude: ['/404'],
   };

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Super Heroes Legacy - Your Ultimate Comic Guide',
     description: 'Discover Marvel and DC reading orders, events, and issues at Super Heroes Legacy.',
-    url: 'https://www.superheroeslegacy.com',
+    url: 'https://houseofheroes.dev',
     siteName: 'Super Heroes Legacy',
     images: [
       {

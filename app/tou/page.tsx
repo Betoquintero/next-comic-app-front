@@ -96,7 +96,7 @@ const TermsOfUse: React.FC = () => {
 
         <h2 className="text-2xl font-bold mt-6 mb-4 text-black">10. Contact Us</h2>
         <p className="text-md mb-4 text-gray-800">
-          If you have any questions or concerns about these Terms of Use, please contact us at contact@superheroeslegacy.com or through our{' '}
+          If you have any questions or concerns about these Terms of Use, please contact us through our{' '}
           <Link href="/contact" className="text-blue-600 hover:underline">
             contact form
           </Link>.

@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://www.superheroeslegacy.com
+Host: https://houseofheroes.dev
 
 # Sitemaps
-Sitemap: https://www.superheroeslegacy.com/sitemap.xml
+Sitemap: https://houseofheroes.dev/sitemap.xml
