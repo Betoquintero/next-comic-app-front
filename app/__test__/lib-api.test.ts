@@ -6,6 +6,7 @@ import {
   fetchProfileData,
   assertChatResponseOk,
   parseChatStream,
+  parseCategorizeResponse,
   SessionExpiredError,
 } from '../../lib/api';
 
@@ -208,5 +209,62 @@ describe('parseChatStream', () => {
     const response = fakeStreamResponse(['data: {"type":"error","message":"Something went wrong"}\n\n']);
 
     await expect(parseChatStream(response, jest.fn())).rejects.toThrow('Something went wrong');
+  });
+});
+
+describe('parseCategorizeResponse', () => {
+  test('returns the suggestion and basedOn matches on success', async () => {
+    const suggestion = { universe: 'DC', event: 'Injustice', isNewEvent: false, order: '2', reasoning: 'Follows #1.' };
+    const basedOn = [{ name: 'Injustice: Year Zero #1', universe: 'DC', event: 'Injustice' }];
+    const response = {
+      ok: true,
+      json: () => Promise.resolve({ data: { suggestion, basedOn } }),
+    } as unknown as Response;
+
+    const result = await parseCategorizeResponse(response);
+
+    expect(result).toEqual({ suggestion, basedOn });
+  });
+
+  test('throws a session-expired message on 401', async () => {
+    await expect(parseCategorizeResponse({ ok: false, status: 401 } as Response)).rejects.toThrow(
+      'Your session has expired. Please log in again.'
+    );
+  });
+
+  test('throws the backend error message on 429', async () => {
+    const response = {
+      ok: false,
+      status: 429,
+      json: () => Promise.resolve({ error: 'Slow down, try again in 5 minutes.' }),
+    } as unknown as Response;
+
+    await expect(parseCategorizeResponse(response)).rejects.toThrow('Slow down, try again in 5 minutes.');
+  });
+
+  test('falls back to a generic rate-limit message when the 429 body has no error field', async () => {
+    const response = { ok: false, status: 429, json: () => Promise.reject(new Error('invalid json')) } as unknown as Response;
+
+    await expect(parseCategorizeResponse(response)).rejects.toThrow(
+      'Too many requests. Please wait a moment and try again.'
+    );
+  });
+
+  test('throws the backend error message on 400', async () => {
+    const response = {
+      ok: false,
+      status: 400,
+      json: () => Promise.resolve({ error: 'Please provide at least a "name" for the comic to categorize' }),
+    } as unknown as Response;
+
+    await expect(parseCategorizeResponse(response)).rejects.toThrow(
+      'Please provide at least a "name" for the comic to categorize'
+    );
+  });
+
+  test('throws a generic message on other errors', async () => {
+    await expect(parseCategorizeResponse({ ok: false, status: 500 } as Response)).rejects.toThrow(
+      'Failed to get a categorization suggestion'
+    );
   });
 });

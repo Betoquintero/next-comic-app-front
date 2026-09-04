@@ -26,6 +26,8 @@ de Tech Lead).
   `master`), apuntando al backend de Hetzner/k3s. Ver sesión abajo
 - Tests E2E con Playwright — **[2026-09-04]** 2 specs (`e2e/`), ver sesión
   abajo
+- Vista de auto-categorización (`/categorize`) — **[2026-09-04]**, ver
+  sesión abajo
 
 ## Stack objetivo
 - Mantener Next.js + TypeScript
@@ -35,8 +37,27 @@ de Tech Lead).
   (ver sesión abajo)
 - ~~UI para el chat conversacional de IA (RAG)~~ — **completo y validado
   end-to-end, 2026-09-03** (ver sesión abajo)
-- Integración con backend para auto-categorización (vista de admin) —
-  **único punto que queda del roadmap original del front**
+- ~~Integración con backend para auto-categorización (vista de admin)~~ —
+  **completo, 2026-09-04** (ver sesión abajo). Con esto, el roadmap
+  original del front queda cerrado por completo
+
+## Deuda técnica pendiente, sin fecha asignada
+- ~~`JWT_SECRET_KEY` comiteado en `.env`~~ — **resuelto, 2026-09-05**:
+  borrado de `next.config.js` y `.env`. Sigue en el historial de git de
+  commits anteriores (no se reescribió el historial); el valor no protegía
+  nada real, así que no se consideró necesario rotar/purgar más a fondo.
+- ~~Sin CI en este repo~~ — **resuelto, 2026-09-05**:
+  `.github/workflows/ci.yml`, ver sesión abajo. Solo Jest (typecheck +
+  lint + test + build), no Playwright — el E2E necesita el backend real +
+  Atlas corriendo, complicaría demasiado el pipeline para el beneficio
+  (checkout de otro repo, secrets de Mongo/Gemini/Claude duplicados aquí)
+- ~~El backend no tenía un rol de admin real, y encima `POST/PUT/DELETE
+  /issues`/`/events` no exigían ni login~~ — **el hueco de escritura
+  anónima se cerró, 2026-09-05** (ver sesión abajo): ahora exigen
+  `isAuthenticated`, igual que `/categorize`. Sigue sin existir un rol de
+  admin de verdad (`User.role` no se usa en ningún sitio) — no hizo falta
+  para cerrar el hueco real, que era la falta de login, no la falta de
+  rol. Si algún día se necesita un admin de verdad, sigue pendiente.
 
 ## Backend relacionado (repo separado)
 El backend está en otro repositorio, migrando de Express+JavaScript a TypeScript,
@@ -162,7 +183,7 @@ considerarse comprometido (rotar si alguna vez tuvo un valor real).
 Tests: 163→169 (los 6 nuevos cubren los 2 bugs de refresh + el caso 401 de
 `fetchProfileData`). `tsc --noEmit` y `yarn lint` limpios.
 
-## Sesión 2026-09-04 — re-despliegue en Vercel + E2E con Playwright (completa)
+## Sesión 2026-09-04 — re-despliegue en Vercel + E2E con Playwright + vista de auto-categorización (completa, roadmap del front cerrado)
 
 **Parte 1 — re-despliegue:**
 - Antes de tocar infra, limpieza de referencias muertas encontradas
@@ -232,6 +253,69 @@ Tests: 163→169 (los 6 nuevos cubren los 2 bugs de refresh + el caso 401 de
   limpieza dentro del test deja la cuenta compartida lista para la
   siguiente corrida) — ambas en verde. `yarn test` (169 Jest) y `tsc
   --noEmit` sin romperse.
+
+**Parte 3 — vista de auto-categorización (`/categorize`):**
+- Antes de picar código, dos hallazgos explorando el backend que acotaron
+  el alcance (decididos con el usuario):
+  1. **No hay rol de admin real**: `User.role` existe en el modelo
+     (`back-HouseOfHeroes/models/User.ts`) pero ningún middleware lo
+     comprueba en ningún sitio — y peor, **`POST/PUT/DELETE
+     /issues`/`/events` no tienen ni `isAuthenticated`**, cualquiera sin
+     loguear puede llamarlos hoy. El JWT tampoco expone `role`. Decisión:
+     la página queda abierta a cualquier usuario logueado, igual que
+     `/categorize` en el backend — sin tocar el backend esta sesión (queda
+     anotado en deuda técnica arriba).
+  2. **`/categorize` solo sugiere, no escribe en Mongo** — y el `POST
+     /issues` real ni siquiera acepta `order` ni el evento al que
+     pertenece (`schemas/catalog.schema.ts` del backend), así que
+     "aplicar" la sugerencia completa no es posible vía la API actual de
+     todas formas. Decisión: la vista solo muestra la sugerencia, no
+     intenta crear el cómic.
+- `lib/api.ts`: tipos `CategorizationSuggestion`/`CategorizationMatch`/
+  `CategorizeResult` + `parseCategorizeResponse(response)` — mismo patrón
+  de errores que `assertChatResponseOk` (401/429/genérico), más 400
+  (falta `name`, ese campo sí es obligatorio en el backend).
+- `CategorizeForm.tsx` + `app/categorize/page.tsx` + link "Categorize" en
+  `NavBar.tsx`: mismo esqueleto que `ChatWindow.tsx` (auth gate,
+  `authenticatedFetch`, toast de error) — sin inventar un patrón nuevo.
+  Formulario `name`/`summary`/`description` → panel de resultado con
+  universo, evento (badge "New event" si aplica), orden sugerido,
+  razonamiento, y los cómics similares en los que se basó.
+- Sin bugs nuevos esta parte — reutilizar el patrón ya validado de
+  `ChatWindow`/`authenticatedFetch` salió limpio a la primera (180/180
+  tests en verde, `tsc`/`lint` limpios).
+- **Verificado end-to-end contra el backend real**: con el usuario de
+  prueba, pedida la sugerencia para "Injustice: Year Zero #2" (el mismo
+  cómic que el backend probó manualmente en su sesión 10) — resultado
+  idéntico: universo DC, evento Injustice, orden sugerido 2, razonamiento
+  en español, 6 cómics similares listados.
+
+Con esto, **el roadmap original del frontend queda cerrado por
+completo** — solo queda la deuda técnica sin fecha listada arriba.
+
+## Sesión 2026-09-05 — limpieza de deuda técnica: secret muerto, CI, y un
+fix de seguridad real en el backend (completa)
+
+- ~~`JWT_SECRET_KEY`~~ borrado de `next.config.js`/`.env` (huérfano desde
+  la limpieza del 2026-08-06, sin uso real). Sigue en commits antiguos del
+  historial de git — no se reescribió el historial, el valor no protegía
+  nada real.
+- **`.github/workflows/ci.yml`** (nuevo): `npm ci` → `tsc --noEmit` →
+  `next lint` → `yarn test` (180 tests) → `yarn build`, en push/PR a
+  `master`. Sin Playwright en CI — decisión explícita, el E2E necesita el
+  backend real + Atlas corriendo (ver `e2e/` de la sesión 2026-09-04), y
+  duplicar esos secrets aquí no compensaba para un repo de portfolio.
+- **Fix de seguridad real, en el backend** (`back-HouseOfHeroes`, no este
+  repo): explorando qué protegía `/categorize` para la vista de
+  auto-categorización (sesión 2026-09-04) se encontró que
+  `POST/PUT/DELETE /issues`, `/events` y `/parts` **nunca tuvieron
+  `isAuthenticated`** — cualquiera en internet podía escribir en el
+  catálogo de producción sin loguearse. Decidido con el usuario: exigir
+  login (no inventar un rol de admin que no se usa en ningún otro sitio).
+  Corregido en las 3 rutas (9 endpoints), con un test de integración nuevo
+  que verifica el 401 sin token, y verificado en runtime real contra Atlas
+  (`POST /issues` sin token → 401). Detalle completo en el `CLAUDE.md` del
+  backend, sesión 19.
 
 ## Convenciones de trabajo con Claude Code
 - El desarrollador dispone de ~2-3 noches/semana, pocas horas cada una: preferir

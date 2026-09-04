@@ -206,5 +206,46 @@ export async function getPartsByUniverse(universe: string): Promise<Part[]> {
       events: [],
     };
   };
-  
+
+  export interface CategorizationSuggestion {
+    universe: 'DC' | 'MARVEL';
+    event: string;
+    isNewEvent: boolean;
+    order: string;
+    reasoning: string;
+  }
+
+  export interface CategorizationMatch {
+    name?: string;
+    universe?: string;
+    event?: string;
+  }
+
+  export interface CategorizeResult {
+    suggestion: CategorizationSuggestion;
+    basedOn: CategorizationMatch[];
+  }
+
+  // POST /categorize is a plain JSON endpoint (no streaming, unlike /chat) —
+  // same 400/401/429 shape as the rest of the API's errorHandler.
+  export async function parseCategorizeResponse(response: Response): Promise<CategorizeResult> {
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('Your session has expired. Please log in again.');
+      }
+      if (response.status === 429) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error || 'Too many requests. Please wait a moment and try again.');
+      }
+      if (response.status === 400) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error || 'Please provide at least a name for the comic.');
+      }
+      throw new Error('Failed to get a categorization suggestion');
+    }
+
+    const data = await response.json();
+    return data.data as CategorizeResult;
+  }
+
   

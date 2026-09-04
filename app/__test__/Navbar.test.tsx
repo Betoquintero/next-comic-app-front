@@ -56,6 +56,14 @@ describe('Navbar Component', () => {
     expect(chatLink).toHaveAttribute('href', '/chat');
   });
 
+  test('renders Categorize link correctly', () => {
+    render(<Navbar />);
+
+    const categorizeLink = screen.getByTestId('link-/categorize');
+    expect(categorizeLink).toBeInTheDocument();
+    expect(categorizeLink).toHaveAttribute('href', '/categorize');
+  });
+
   test('renders Signup and Login when user is not authenticated', () => {
     (useAuth as jest.Mock).mockReturnValue({ isAuthenticated: false });
 

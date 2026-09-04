@@ -30,6 +30,10 @@ const Navbar: React.FC = () => {
             Chat
           </Link>
 
+          <Link href="/categorize" className="text-lg font-semibold hover:text-gray-400">
+            Categorize
+          </Link>
+
           {!isAuthenticated && (
             <>
               <Link

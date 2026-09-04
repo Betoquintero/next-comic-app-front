@@ -11,7 +11,6 @@ const nextConfig = {
     ],
   },
   env: {
-    JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
 };
