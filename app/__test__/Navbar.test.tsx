@@ -56,12 +56,33 @@ describe('Navbar Component', () => {
     expect(chatLink).toHaveAttribute('href', '/chat');
   });
 
-  test('renders Categorize link correctly', () => {
+  test('renders Categorize link for an admin user', () => {
+    (useAuth as jest.Mock).mockReturnValue({
+      isAuthenticated: true,
+      user: { _id: '123', role: 'admin' },
+      logoutUser: jest.fn(),
+    });
+
     render(<Navbar />);
 
     const categorizeLink = screen.getByTestId('link-/categorize');
     expect(categorizeLink).toBeInTheDocument();
     expect(categorizeLink).toHaveAttribute('href', '/categorize');
+  });
+
+  test('hides Categorize link for a regular user and for visitors', () => {
+    (useAuth as jest.Mock).mockReturnValue({
+      isAuthenticated: true,
+      user: { _id: '123', role: 'user' },
+      logoutUser: jest.fn(),
+    });
+    const { unmount } = render(<Navbar />);
+    expect(screen.queryByTestId('link-/categorize')).not.toBeInTheDocument();
+    unmount();
+
+    (useAuth as jest.Mock).mockReturnValue({ isAuthenticated: false, user: null });
+    render(<Navbar />);
+    expect(screen.queryByTestId('link-/categorize')).not.toBeInTheDocument();
   });
 
   test('renders Signup and Login when user is not authenticated', () => {

@@ -11,6 +11,9 @@ export interface User {
   _id: string;
   username: string;
   email: string;
+  // Only used to decide what the UI shows (e.g. admin-only links) - the
+  // backend checks the role in the DB on every admin request.
+  role?: 'user' | 'admin';
 }
 
 interface AuthContextType {
@@ -79,6 +82,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { response: await doFetch(newToken), refreshFailed: false };
   };
 
+  // The JWT payload (/auth/me) doesn't carry the role, so it's read from the
+  // user document. Best-effort: on any failure the user is treated as a
+  // regular user, which only hides admin UI.
+  const fetchRole = async (): Promise<User['role']> => {
+    try {
+      const { response } = await fetchWithRefresh('/user/loggedInUser', Cookies.get('authToken'));
+      if (!response.ok) return 'user';
+      const body = await response.json();
+      return body?.data?.role === 'admin' ? 'admin' : 'user';
+    } catch {
+      return 'user';
+    }
+  };
+
   const authenticateUser = async (token: string) => {
     persistToken(token);
 
@@ -92,7 +109,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (response.ok) {
         const userData = await response.json();
-        setUser(userData);
+        const role = await fetchRole();
+        setUser({ ...userData, role });
         setIsAuthenticated(true);
       } else {
         console.error('Failed to fetch user data');

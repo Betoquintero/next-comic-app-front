@@ -30,6 +30,7 @@ const TestComponent = () => {
     <div>
       <p data-testid="auth-status">{isAuthenticated ? 'Authenticated' : 'Not Authenticated'}</p>
       <p data-testid="user">{user ? user.username : 'No User'}</p>
+      <p data-testid="role">{user?.role ?? 'No Role'}</p>
       <p data-testid="fetch-result">{fetchResult ?? 'No Result'}</p>
       <button onClick={() => authenticateUser('mock-token')} data-testid="login-button">
         Login
@@ -90,6 +91,62 @@ describe('AuthContext', () => {
       );
       expect(screen.getByTestId('auth-status')).toHaveTextContent('Authenticated');
       expect(screen.getByTestId('user')).toHaveTextContent('testuser');
+    });
+  });
+
+  test('reads the role from /user/loggedInUser after authenticating', async () => {
+    global.fetch = jest.fn((url: string) =>
+      Promise.resolve({
+        ok: true,
+        status: 200,
+        json: () =>
+          Promise.resolve(
+            url.includes('/user/loggedInUser')
+              ? { data: { username: 'admin', role: 'admin' } }
+              : { username: 'admin' }
+          ),
+      } as unknown as Response)
+    ) as jest.Mock;
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    );
+
+    act(() => {
+      fireEvent.click(screen.getByTestId('login-button'));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('role')).toHaveTextContent('admin');
+    });
+  });
+
+  test('treats the user as a regular user if the role lookup fails', async () => {
+    global.fetch = jest.fn((url: string) =>
+      url.includes('/user/loggedInUser')
+        ? Promise.reject(new Error('network down'))
+        : Promise.resolve({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve({ username: 'testuser' }),
+          } as unknown as Response)
+    ) as jest.Mock;
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    );
+
+    act(() => {
+      fireEvent.click(screen.getByTestId('login-button'));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auth-status')).toHaveTextContent('Authenticated');
+      expect(screen.getByTestId('role')).toHaveTextContent('user');
     });
   });
 
@@ -178,6 +235,15 @@ describe('AuthContext', () => {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve({ authToken: 'new-token' }),
+        } as unknown as Response);
+      }
+
+      if (!String(url).includes('/auth/me')) {
+        // role lookup (/user/loggedInUser) after a successful /auth/me
+        return Promise.resolve({
+          status: 200,
+          ok: true,
+          json: () => Promise.resolve({ data: { role: 'user' } }),
         } as unknown as Response);
       }
 
