@@ -11,7 +11,7 @@ describe('Home Component Tests', () => {
   describe('Header Section', () => {
     it('renders the main heading', () => {
       expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-        'Super Heroes Legacy - Your Ultimate Guide to Marvel & DC Comics'
+        'House of Heroes - Your Ultimate Guide to Marvel & DC Comics'
       );
     });
 
@@ -23,7 +23,7 @@ describe('Home Component Tests', () => {
 
     it('renders the welcome heading', () => {
       expect(
-        screen.getByRole('heading', { level: 2, name: /welcome to super heroes legacy/i })
+        screen.getByRole('heading', { level: 2, name: /welcome to house of heroes/i })
       ).toBeInTheDocument();
     });
   });
@@ -59,10 +59,6 @@ describe('Home Component Tests', () => {
   });
 
   describe('Image Accessibility', () => {
-    it('renders Super Heroes Legacy logo with correct alt text', () => {
-      expect(screen.getByAltText('Super Heroes Legacy Logo')).toBeInTheDocument();
-    });
-
     it('renders DC Comics logo with correct alt text', () => {
       expect(screen.getByAltText('Explore DC Comics Reading Order')).toBeInTheDocument();
     });

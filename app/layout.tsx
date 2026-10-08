@@ -10,20 +10,20 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://houseofheroes.dev'),
-  title: 'Super Heroes Legacy',
+  title: 'House of Heroes',
   description: 'Best guide for reading comics from Marvel, DC, and beyond!',
-  keywords: 'Comics, DC Comics, Marvel, Comic Reading Guide, Reading Order, Super Heroes Legacy, Comic Events, Comic Issues, Superheroes',
+  keywords: 'Comics, DC Comics, Marvel, Comic Reading Guide, Reading Order, House of Heroes, Comic Events, Comic Issues, Superheroes',
   openGraph: {
-    title: 'Super Heroes Legacy - Discover the World of Comics',
+    title: 'House of Heroes - Discover the World of Comics',
     description: 'Your ultimate comic reading guide for Marvel, DC, and more.',
     url: 'https://houseofheroes.dev',
-    siteName: 'Super Heroes Legacy',
+    siteName: 'House of Heroes',
     images: [
       {
-        url: '/img/super-heroes-legacy-logo.png',
-        width: 800,
-        height: 600,
-        alt: 'Super Heroes Legacy Logo',
+        url: '/img/marvel-dc-home.png',
+        width: 1798,
+        height: 291,
+        alt: 'House of Heroes - DC and Marvel reading orders',
       },
     ],
     locale: 'en_US',

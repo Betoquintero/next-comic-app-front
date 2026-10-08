@@ -5,24 +5,23 @@ import MixedGrid from './components/MixedGrid';
 import Image from 'next/image';
 import dcLogo from '../public/img/DC_Comics_logo.svg.png';
 import marvelLogo from '../public/img/Marvel_Logo.svg.png';
-import SuperHeroesLegacyLogo from '../public/img/super-heroes-legacy-logo.png';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Super Heroes Legacy - Discover Marvel & DC Comics',
-  description: 'Explore DC and Marvel reading orders, comic events, and issues. Super Heroes Legacy is the ultimate guide for comic lovers—newbies and veterans alike.',
-  keywords: 'Comics, DC Comics, Marvel Comics, Comic Reading Guide, Comic Events, Comic Issues, Superheroes Legacy, Marvel Reading Order, DC Reading Order',
+  title: 'House of Heroes - Discover Marvel & DC Comics',
+  description: 'Explore DC and Marvel reading orders, comic events, and issues. House of Heroes is the ultimate guide for comic lovers—newbies and veterans alike.',
+  keywords: 'Comics, DC Comics, Marvel Comics, Comic Reading Guide, Comic Events, Comic Issues, House of Heroes, Marvel Reading Order, DC Reading Order',
   openGraph: {
-    title: 'Super Heroes Legacy - Your Ultimate Comic Guide',
-    description: 'Discover Marvel and DC reading orders, events, and issues at Super Heroes Legacy.',
+    title: 'House of Heroes - Your Ultimate Comic Guide',
+    description: 'Discover Marvel and DC reading orders, events, and issues at House of Heroes.',
     url: 'https://houseofheroes.dev',
-    siteName: 'Super Heroes Legacy',
+    siteName: 'House of Heroes',
     images: [
       {
-        url: '/img/super-heroes-legacy-logo.png',
-        width: 800,
-        height: 600,
-        alt: 'Super Heroes Legacy Logo',
+        url: '/img/marvel-dc-home.png',
+        width: 1798,
+        height: 291,
+        alt: 'House of Heroes - DC and Marvel reading orders',
       },
     ],
     locale: 'en_US',
@@ -33,13 +32,9 @@ export const metadata: Metadata = {
 const Home: React.FC = () => {
   return (
     <MixedGrid>
-      <div className="flex flex-col items-center justify-center mb-8">
-        <Image src={SuperHeroesLegacyLogo} width={300} height={300} alt="Super Heroes Legacy Logo" className="h-[300px] w-[300px]" />
-      </div>
-
       {/* Main Heading */}
       <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
-        Super Heroes Legacy - Your Ultimate Guide to Marvel & DC Comics
+        House of Heroes - Your Ultimate Guide to Marvel & DC Comics
       </h1>
 
       {/* Universe Section Heading */}
@@ -59,9 +54,9 @@ const Home: React.FC = () => {
 
       {/* Comic Universe Introduction */}
       <div className="bg-gray-200 rounded-xl p-6 sm:p-8 md:p-10 lg:p-12 xl:p-14 mb-6 text-justify mx-auto w-full max-w-5xl shadow-lg">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Welcome to Super Heroes Legacy</h2>
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Welcome to House of Heroes</h2>
         <p className="text-gray-800 text-md md:text-base lg:text-lg">
-          Super Heroes Legacy is your go-to resource for navigating the worlds of <strong>Marvel</strong> and <strong>DC Comics</strong>. Whether you're a new fan looking for the right starting point or a seasoned reader seeking a complete reading order, we have you covered with curated lists and timelines.
+          House of Heroes is your go-to resource for navigating the worlds of <strong>Marvel</strong> and <strong>DC Comics</strong>. Whether you're a new fan looking for the right starting point or a seasoned reader seeking a complete reading order, we have you covered with curated lists and timelines.
         </p>
         <p className="text-gray-800 text-md md:text-base lg:text-lg">
           Discover comprehensive reading orders, including major comic events and individual issues, that allow you to dive into the thrilling universes of iconic heroes and villains. Follow along with the classic stories of <strong>Spider-Man</strong>, <strong>Batman</strong>, <strong>Wonder Woman</strong>, and <strong>Iron Man</strong> as they unfold across universes.

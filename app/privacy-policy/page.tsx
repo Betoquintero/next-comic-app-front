@@ -7,11 +7,11 @@ const PrivacyPolicy: React.FC = () => {
     <MixedGrid>
       <div className="bg-gray-200 rounded-xl p-6 mb-6 text-justify mx-auto w-full shadow-lg">
         <h1 className="text-3xl font-bold mb-6 text-center text-black">
-          Privacy Policy for Super Heroes Legacy
+          Privacy Policy for House of Heroes
         </h1>
 
         <p className="text-gray-800 mb-4">
-          At Super Heroes Legacy, accessible from https://houseofheroes.dev, the privacy of our users is of utmost importance to us.
+          At House of Heroes, accessible from https://houseofheroes.dev, the privacy of our users is of utmost importance to us.
           This Privacy Policy outlines the types of information we collect and how it is used. By using our app, you agree to the practices
           described in this policy.
         </p>
