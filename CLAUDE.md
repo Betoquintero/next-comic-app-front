@@ -44,8 +44,11 @@ de Tech Lead).
 ## Deuda técnica pendiente, sin fecha asignada
 - ~~`JWT_SECRET_KEY` comiteado en `.env`~~ — **resuelto, 2026-09-05**:
   borrado de `next.config.js` y `.env`. Sigue en el historial de git de
-  commits anteriores (no se reescribió el historial); el valor no protegía
-  nada real, así que no se consideró necesario rotar/purgar más a fondo.
+  commits anteriores (no se reescribió el historial). **Corrección
+  2026-10-08:** el valor SÍ era real, el mismo que el `TOKEN_SECRET` del
+  backend (8 caracteres). Se rotaron `TOKEN_SECRET` y `RESET_TOKEN_SECRET` en
+  producción (128 caracteres) y el backend ahora exige ≥32 caracteres.
+  `.env` ya no se versiona (hay un `.env.example`).
 - ~~Sin CI en este repo~~ — **resuelto, 2026-09-05**:
   `.github/workflows/ci.yml`, ver sesión abajo. Solo Jest (typecheck +
   lint + test + build), no Playwright — el E2E necesita el backend real +
@@ -57,7 +60,10 @@ de Tech Lead).
   `isAuthenticated`, igual que `/categorize`. Sigue sin existir un rol de
   admin de verdad (`User.role` no se usa en ningún sitio) — no hizo falta
   para cerrar el hueco real, que era la falta de login, no la falta de
-  rol. Si algún día se necesita un admin de verdad, sigue pendiente.
+  rol. **Actualización 2026-10-07:** ya existe un rol de admin real
+  (`requireAdmin` en el backend, leído de la DB) en las escrituras del
+  catálogo y en `/categorize`. El front oculta el enlace a Categorize si
+  `user.role !== 'admin'`; el rol se obtiene de `/user/loggedInUser`.
 
 ## Backend relacionado (repo separado)
 El backend está en otro repositorio, migrando de Express+JavaScript a TypeScript,
