@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
 import { useAuth } from '../context/AuthContext';
 import { assertChatResponseOk, parseChatStream, ChatMessage, ChatSource } from '../../lib/api';
 import { toast, ToastContainer } from 'react-toastify';
@@ -125,7 +126,14 @@ const ChatWindow: React.FC = () => {
                 message.role === 'user' ? 'bg-dc-blue text-white' : 'bg-light-grey text-gray-800'
               }`}
             >
-              {message.content}
+              {/* Claude answers in markdown; Tailwind's preflight strips list/bold styles, so restore them here */}
+              {message.role === 'assistant' ? (
+                <div className="[&_p]:my-1 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:my-0.5 [&_strong]:font-semibold">
+                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                </div>
+              ) : (
+                message.content
+              )}
             </div>
             {message.sources && message.sources.length > 0 && (
               <p className="text-xs text-gray-500 mt-1">
