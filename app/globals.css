@@ -28,3 +28,11 @@ body {
   background-size: cover;
 }
 
+/* Form fields keep the browser's white background, so in dark mode they would
+   inherit the white body text and become unreadable. */
+@layer components {
+  .formBox {
+    @apply bg-white text-gray-900;
+  }
+}
+
