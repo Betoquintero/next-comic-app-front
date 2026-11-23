@@ -10,6 +10,10 @@ Frontend for **[houseofheroes.dev](https://houseofheroes.dev)**, a reading-order
 |---|---|
 | ![Home](docs/screenshots/home.png) | ![DC timeline](docs/screenshots/dc-timeline.png) |
 
+**AI reading assistant:** this reader has reached the early '90s, so it recommends what's available and refuses to spoil Superman's fate.
+
+![AI reading assistant](docs/screenshots/chat.png)
+
 ## Features
 
 - **Timeline browsing** for DC and Marvel: sagas, events and issues, with summaries and reading context.
