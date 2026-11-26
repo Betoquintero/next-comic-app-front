@@ -5,7 +5,6 @@ import { AuthProvider, useAuth } from '../context/AuthContext';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
-// Mock de Cookies y useRouter
 jest.mock('js-cookie', () => ({
   get: jest.fn(),
   set: jest.fn(),
@@ -16,7 +15,6 @@ jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
 
-// Componente de prueba para acceder al contexto
 const TestComponent = () => {
   const { isAuthenticated, authenticateUser, logoutUser, user, authenticatedFetch } = useAuth();
   const [fetchResult, setFetchResult] = React.useState<string | null>(null);
@@ -222,11 +220,6 @@ describe('AuthContext', () => {
   });
 
   test('refreshes silently on mount when the stored access token has expired, instead of logging out', async () => {
-    // Reproduces a real bug found testing against the live backend: a page
-    // reload with an expired access token but a still-valid refresh cookie
-    // was bouncing straight to logout instead of refreshing, because the
-    // mount-time /auth/me check didn't go through the same refresh-and-retry
-    // path as authenticatedFetch.
     (Cookies.get as jest.Mock).mockReturnValue('expired-token');
 
     let meCalls = 0;
@@ -239,7 +232,6 @@ describe('AuthContext', () => {
       }
 
       if (!String(url).includes('/auth/me')) {
-        // role lookup (/user/loggedInUser) after a successful /auth/me
         return Promise.resolve({
           status: 200,
           ok: true,
@@ -295,12 +287,6 @@ describe('AuthContext', () => {
 
   describe('authenticatedFetch', () => {
     beforeEach(() => {
-      // `clearAllMocks` doesn't reset a `mockReturnValue` left over from an
-      // earlier test, so pin this explicitly: no stored token means the
-      // mount-time authenticateUser effect skips its fetch and `loading`
-      // resolves synchronously. authenticatedFetch reads the cookie fresh
-      // on each call regardless, so these tests don't depend on a token
-      // being present at mount.
       (Cookies.get as jest.Mock).mockReturnValue(undefined);
     });
 

@@ -37,9 +37,6 @@ const ChatWindow: React.FC = () => {
     let assistantMessageStarted = false;
 
     const appendDelta = (text: string) => {
-      // Flip the flag synchronously here, not inside the setState updater
-      // below — React may defer calling that updater, so code right after
-      // parseChatStream resolves would still see the stale `false`.
       const isFirstDelta = !assistantMessageStarted;
       assistantMessageStarted = true;
 
@@ -126,7 +123,6 @@ const ChatWindow: React.FC = () => {
                 message.role === 'user' ? 'bg-dc-blue text-white' : 'bg-light-grey text-gray-800'
               }`}
             >
-              {/* Claude answers in markdown; Tailwind's preflight strips list/bold styles, so restore them here */}
               {message.role === 'assistant' ? (
                 <div className="[&_p]:my-1 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:my-0.5 [&_strong]:font-semibold">
                   <ReactMarkdown>{message.content}</ReactMarkdown>

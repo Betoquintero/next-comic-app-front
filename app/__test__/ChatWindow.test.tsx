@@ -33,9 +33,6 @@ type SseEvent = { type: string; [key: string]: unknown };
 
 const buildSse = (events: SseEvent[]) => events.map((event) => `data: ${JSON.stringify(event)}\n\n`).join('');
 
-// A Response-like object whose body streams the given SSE text in one go —
-// exercises the real assertChatResponseOk/parseChatStream from lib/api.ts,
-// same technique as lib-api.test.ts's fakeStreamResponse.
 const fakeStreamResponse = (events: SseEvent[]): Response => {
   const chunk = encoder.encode(buildSse(events));
   let delivered = false;
@@ -51,8 +48,6 @@ const fakeStreamResponse = (events: SseEvent[]): Response => {
   return { ok: true, status: 200, body: { getReader: () => reader } } as unknown as Response;
 };
 
-// A controllable stream for tests that need to assert on in-between state
-// (e.g. the "Thinking..." indicator before the first delta arrives).
 const createControlledStreamResponse = () => {
   const queue: { done: boolean; value?: Uint8Array }[] = [];
   const waiters: Array<(item: { done: boolean; value?: Uint8Array }) => void> = [];
@@ -193,8 +188,6 @@ describe('ChatWindow Component', () => {
     await waitFor(() => {
       expect(screen.getByText('Read Secret Wars next.')).toBeInTheDocument();
     });
-    // The sources are attached in a follow-up state update after the stream
-    // finishes, so this needs its own wait rather than a synchronous check.
     await waitFor(() => {
       expect(screen.getByText(/based on: secret wars/i)).toBeInTheDocument();
     });

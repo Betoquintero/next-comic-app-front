@@ -1,8 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-// Fixed, pre-verified account — see back-HouseOfHeroes/scripts/createTestUser.ts.
-// Signup can't be chained into this flow because the backend requires a
-// real email-verification click (see signup.spec.ts for that half).
 const TEST_EMAIL = 'test@houseofheroes.dev';
 const TEST_PASSWORD = 'Test1234';
 
@@ -46,8 +43,6 @@ test('login, save an event to the collection, and mark an issue as read', async 
     await page.getByRole('button', { name: 'Expand collection' }).first().click();
     await expect(page.getByRole('button', { name: 'Mark as Unread' }).first()).toBeVisible();
 
-    // Cleanup: restore read state and remove the event, so the shared test
-    // account is back to its starting point for the next run.
     await page.getByRole('button', { name: 'Mark as Unread' }).first().click();
     await expect(page.getByRole('button', { name: 'Mark as Read' }).first()).toBeVisible();
     await page.getByRole('button', { name: 'Delete event' }).first().click();

@@ -4,7 +4,6 @@ import '@testing-library/jest-dom';
 import ProfileEventCollection from '../components/ProfileEventCollection';
 import { useRouter } from 'next/navigation';
 
-// Mockeamos useRouter de Next.js
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));

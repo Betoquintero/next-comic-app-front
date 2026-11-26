@@ -6,19 +6,16 @@ import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
-// Mockeamos el hook de autenticación
 jest.mock('../context/AuthContext', () => ({
   useAuth: jest.fn(),
 }));
 
-// Mockeamos useRouter
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(() => ({
     refresh: jest.fn(),
   })),
 }));
 
-// Mockeamos toast
 jest.mock('react-toastify', () => ({
   toast: {
     success: jest.fn(),
@@ -47,7 +44,6 @@ describe('EventDetails Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    // Mockeamos autenticación
     (useAuth as jest.Mock).mockReturnValue({
       isAuthenticated: true,
       authenticatedFetch: jest.fn((url: string, init?: RequestInit) => global.fetch(url, init)),

@@ -15,19 +15,15 @@ const MixedGrid: React.FC<MixedGridProps> = ({ children }) => {
         data-testid="header"
       ></div>
 
-      {/* Left side */}
       <div className="row-span-2 bg-dc-blue" data-testid="left-side"></div>
 
-      {/* Main content area */}
       <div className="row-span-2 bg-white mx-full px-4 py-10" data-testid="main-content">
         {children}
       </div>
 
-      {/* Right side */}
       <div className="row-span-2 bg-marvel-red" data-testid="right-side"></div>
     </div>
   );
 };
-
 
 export default MixedGrid;

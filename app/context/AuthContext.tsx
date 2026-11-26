@@ -11,14 +11,12 @@ export interface User {
   _id: string;
   username: string;
   email: string;
-  // Only used to decide what the UI shows (e.g. admin-only links) - the
-  // backend checks the role in the DB on every admin request.
   role?: 'user' | 'admin';
 }
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  authenticateUser: (token: string) => void;  // Accept token as a parameter
+  authenticateUser: (token: string) => void;
   logoutUser: () => void;
   user: User | null;
   authenticatedFetch: (path: string, init?: RequestInit) => Promise<Response>;
@@ -35,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const storedToken = Cookies.get('authToken');
     if (storedToken) {
-      authenticateUser(storedToken);  // Fetch user data if token exists
+      authenticateUser(storedToken);
     } else {
       setLoading(false);
     }
@@ -49,11 +47,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  // Shared by authenticateUser (mount-time / post-login check) and
-  // authenticatedFetch (everything else): attaches the token, and on a 401
-  // tries one silent refresh-and-retry. `refreshFailed: true` means a 401
-  // was hit AND the refresh didn't recover it, so the caller should treat
-  // this as a real logout rather than just a failed request.
   const fetchWithRefresh = async (
     path: string,
     token: string | undefined,
@@ -82,9 +75,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { response: await doFetch(newToken), refreshFailed: false };
   };
 
-  // The JWT payload (/auth/me) doesn't carry the role, so it's read from the
-  // user document. Best-effort: on any failure the user is treated as a
-  // regular user, which only hides admin UI.
   const fetchRole = async (): Promise<User['role']> => {
     try {
       const { response } = await fetchWithRefresh('/user/loggedInUser', Cookies.get('authToken'));
@@ -125,15 +115,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logoutUser = async () => {
-    await logoutRequest(); // Best-effort: revokes the refresh token server-side
+    await logoutRequest();
     Cookies.remove('authToken');
     setUser(null);
     setIsAuthenticated(false);
     router.push('/login');
   };
 
-  // Drop-in replacement for `fetch` against the API: attaches the access
-  // token and, on a 401, tries one silent refresh-and-retry before giving up.
   const authenticatedFetch = async (path: string, init: RequestInit = {}): Promise<Response> => {
     const { response, refreshFailed } = await fetchWithRefresh(path, Cookies.get('authToken'), init);
 
@@ -163,7 +151,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Hook for easy access to the AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import PartDetails from '../components/PartDetails';
 import '@testing-library/jest-dom';
 
-
 const mockEvents = [
   { _id: '1', name: 'Infinity Gauntlet', image: '/images/infinity-gauntlet.jpg' },
   { _id: '2', name: 'Secret Wars', image: '/images/secret-wars.jpg' },
@@ -32,11 +31,9 @@ test('renders event links with correct href', () => {
   render(<PartDetails events={mockEvents} universe="Marvel" />);
 
   mockEvents.forEach((event) => {
-    const eventLink = screen.getByText(event.name).closest('a'); // Obtener el enlace más cercano al texto
+    const eventLink = screen.getByText(event.name).closest('a');
     expect(eventLink).toBeInTheDocument();
     expect(eventLink).toHaveAttribute('href', `/events/${event._id}`);
   });
 });
-
-
 

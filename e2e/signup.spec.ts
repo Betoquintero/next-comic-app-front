@@ -1,9 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-// Signup creates the user but the backend requires clicking a Resend email
-// verification link before /auth/login accepts it — nothing this test can
-// automate. Scope is therefore limited to: the form works, and the backend
-// really accepts the registration (real POST /auth/signup, no mocks).
 test('registers a new account and shows the verification prompt', async ({ page }) => {
   const unique = Date.now();
   const email = `e2e+${unique}@houseofheroes.dev`;

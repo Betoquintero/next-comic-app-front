@@ -6,7 +6,6 @@ import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
-// Mockeamos los hooks de autenticación y enrutamiento
 jest.mock('../context/AuthContext', () => ({
   useAuth: jest.fn(),
 }));

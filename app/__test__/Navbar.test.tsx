@@ -5,7 +5,6 @@ import Navbar from '../components/NavBar';
 import { useAuth } from '../context/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
 
-// Mockeamos los hooks de Next.js y el contexto de autenticación
 jest.mock('../context/AuthContext', () => ({
   useAuth: jest.fn(() => ({
     isAuthenticated: false,
@@ -35,7 +34,6 @@ describe('Navbar Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    // Mockeamos el router y pathname
     mockRouter = { refresh: jest.fn(), push: jest.fn(), back: jest.fn() };
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (usePathname as jest.Mock).mockReturnValue('/');

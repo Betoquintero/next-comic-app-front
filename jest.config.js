@@ -5,7 +5,6 @@ module.exports = {
     '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
     '\\.(jpg|jpeg|png|gif|webp|avif|svg)$': '<rootDir>/__mocks__/fileMock.js',
     '^next/image$': '<rootDir>/__mocks__/next/image.js',
-    // react-markdown is ESM-only (and so is its whole unified/micromark tree), which Jest can't load
     '^react-markdown$': '<rootDir>/__mocks__/react-markdown.js',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],

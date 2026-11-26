@@ -21,18 +21,15 @@ const CustomGrid: React.FC<CustomGridProps> = ({ universe, children }) => {
         }}
       ></div>
 
-      {/* Left side (color based on universe) */}
       <div
         className={`row-span-2 ${universe === 'DC' ? 'bg-dc-blue' : 'bg-marvel-red'}`}
         data-testid="left-side"
       ></div>
 
-      {/* Main content area, centered with more space */}
       <div className="row-span-2 bg-white mx-full px-4 py-10" data-testid="main-content">
         {children}
       </div>
 
-      {/* Right side (color based on universe) */}
       <div
         className={`row-span-2 ${universe === 'DC' ? 'bg-dc-blue' : 'bg-marvel-red'}`}
         data-testid="right-side"
@@ -40,6 +37,5 @@ const CustomGrid: React.FC<CustomGridProps> = ({ universe, children }) => {
     </div>
   );
 };
-
 
 export default CustomGrid;

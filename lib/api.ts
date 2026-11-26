@@ -4,8 +4,8 @@
   name: string;
   order?: string;
   years?: string;
-  events?: string[]; // events Ids
-  issues?: string[]; // Issues Ids
+  events?: string[];
+  issues?: string[];
   description?: string;
 }
 
@@ -101,7 +101,6 @@ export async function getPartsByUniverse(universe: string): Promise<Part[]> {
         credentials: 'include',
       });
     } catch {
-      // Best-effort: local logout must proceed even if this fails.
     }
   }
 
@@ -115,9 +114,6 @@ export async function getPartsByUniverse(universe: string): Promise<Part[]> {
     name?: string;
   }
 
-  // Throws with a user-facing message when the initial POST /chat response
-  // (before any streaming starts) is a non-2xx — 400/401/429 all arrive as
-  // plain JSON, same as before the endpoint became SSE on success.
   export async function assertChatResponseOk(response: Response): Promise<void> {
     if (response.ok) {
       return;
@@ -133,10 +129,6 @@ export async function getPartsByUniverse(universe: string): Promise<Part[]> {
     throw new Error('Failed to get a response from the chat assistant');
   }
 
-  // Parses the SSE body of a successful POST /chat response: a `delta` event
-  // per text chunk (reported via onDelta as it arrives) and a final `done`
-  // event carrying `sources`. Takes an already-fetched Response so it stays
-  // a pure parser, easy to unit-test with a fake reader.
   export async function parseChatStream(
     response: Response,
     onDelta: (text: string) => void
@@ -194,12 +186,11 @@ export async function getPartsByUniverse(universe: string): Promise<Part[]> {
     }
 
     if (!res.ok) {
-      return null; // If the request fails, return null
+      return null;
     }
   
     const userData = await res.json();
   
-    // Ensure that the userData is at least an empty object if no collections are found
     return userData?.data || {
       userId: userId,
       issues: [],
@@ -226,8 +217,6 @@ export async function getPartsByUniverse(universe: string): Promise<Part[]> {
     basedOn: CategorizationMatch[];
   }
 
-  // POST /categorize is a plain JSON endpoint (no streaming, unlike /chat) —
-  // same 400/401/429 shape as the rest of the API's errorHandler.
   export async function parseCategorizeResponse(response: Response): Promise<CategorizeResult> {
     if (!response.ok) {
       if (response.status === 401) {

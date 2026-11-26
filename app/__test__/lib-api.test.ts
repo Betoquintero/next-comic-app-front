@@ -163,9 +163,6 @@ describe('assertChatResponseOk', () => {
 describe('parseChatStream', () => {
   const encoder = new TextEncoder();
 
-  // Builds a Response-like object whose `body.getReader()` hands out the
-  // given raw SSE text one chunk at a time — enough for parseChatStream,
-  // without needing jsdom's (unsupported) real ReadableStream.
   const fakeStreamResponse = (chunks: string[]): Response => {
     let index = 0;
     const reader = {

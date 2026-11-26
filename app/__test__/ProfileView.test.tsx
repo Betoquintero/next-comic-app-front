@@ -6,7 +6,6 @@ import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
-// Mock de hooks y funciones externas
 jest.mock('../context/AuthContext', () => ({
   useAuth: jest.fn(),
 }));
@@ -23,8 +22,6 @@ jest.mock('react-toastify', () => ({
   ToastContainer: () => <div />,
 }));
 
-// Exposes the props ProfileView passes down so tests can exercise
-// deleteEventFromCollection / toggleReadStatus and inspect the resulting collection.
 // eslint-disable-next-line react/display-name
 jest.mock('../components/ProfileEventCollection', () => (props: {
   collection: { events: { _id: string; issues: { _id: string; readStatus: boolean }[] }[] };
@@ -76,8 +73,6 @@ describe('ProfileView Component', () => {
     __v: 0,
   };
 
-  // Waits for the mount-time GET /readStatuses call (triggered by useEffect) to settle,
-  // so it doesn't interfere with the fetch mock a test sets up for its own action.
   const renderAndWaitForMount = async () => {
     render(<ProfileView userData={mockUserData} />);
     await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
@@ -97,7 +92,6 @@ describe('ProfileView Component', () => {
 
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
-    // Default mount-time response: no read statuses yet, matches a fresh collection.
     mockFetch({ ok: true, json: () => Promise.resolve([]) });
   });
 

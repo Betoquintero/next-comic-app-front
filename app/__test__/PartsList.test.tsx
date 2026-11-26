@@ -28,11 +28,9 @@ describe('PartsList Component', () => {
   test('renders parts correctly', () => {
     render(<PartsList parts={mockParts} universe="Marvel" />);
 
-    // Check that the header and description are rendered
     expect(screen.getByText('Explore the Marvel Universe')).toBeInTheDocument();
     expect(screen.getByText(/Discover key parts of the Marvel universe/i)).toBeInTheDocument();
 
-    // Verify parts names
     mockParts.forEach((part) => {
       expect(screen.getByText(part.name)).toBeInTheDocument();
       expect(screen.getByText(part.years as string)).toBeInTheDocument();

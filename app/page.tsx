@@ -32,12 +32,10 @@ export const metadata: Metadata = {
 const Home: React.FC = () => {
   return (
     <MixedGrid>
-      {/* Main Heading */}
       <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
         House of Heroes - Your Ultimate Guide to Marvel & DC Comics
       </h1>
 
-      {/* Universe Section Heading */}
       <h2 className="text-center my-8 text-lg font-semibold text-gray-700">
         Click on one of the universes to start exploring:
       </h2>
@@ -52,7 +50,6 @@ const Home: React.FC = () => {
         </Link>
       </div>
 
-      {/* Comic Universe Introduction */}
       <div className="bg-gray-200 rounded-xl p-6 sm:p-8 md:p-10 lg:p-12 xl:p-14 mb-6 text-justify mx-auto w-full max-w-5xl shadow-lg">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">Welcome to House of Heroes</h2>
         <p className="text-gray-800 text-md md:text-base lg:text-lg">
@@ -63,7 +60,6 @@ const Home: React.FC = () => {
         </p>
       </div>
 
-      {/* Collections and Account Prompt */}
       <div className="bg-gray-200 rounded-xl p-6 sm:p-8 md:p-10 lg:p-12 xl:p-14 mb-6 text-justify mx-auto w-full max-w-5xl shadow-lg">
         <h3 className="text-xl font-semibold text-gray-800 mb-2">Join the Super Heroes Community</h3>
         <p className="text-gray-800 text-md md:text-base lg:text-lg">
@@ -71,12 +67,10 @@ const Home: React.FC = () => {
         </p>
       </div>
 
-      {/* Signup CTA */}
       <Link href="/signup" className="block w-2/3 sm:w-1/2 md:w-1/3 lg:w-1/4 mx-auto bg-gray-700 text-white text-center text-lg rounded-lg py-2 hover:shadow-lg">
         Join the Comic Community Today
       </Link>
 
-      {/* Social Media Links */}
       <div className="text-center mt-6">
         <p className="text-gray-800 text-md">
           Follow us on <a href="https://www.instagram.com/super.heroes.legacy" className="text-blue-600 hover:underline">Instagram</a> for the latest updates on Marvel and DC Comics!

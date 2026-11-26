@@ -21,7 +21,6 @@ const AdditionalContext: React.FC<AdditionalContextProps> = ({ contextComics }) 
     return null;
   }
 
-  // Separate comics into "before" and "after" sections
   const beforeComics = contextComics.filter((comic) => comic.type === 'before');
   const afterComics = contextComics.filter((comic) => comic.type === 'after');
 

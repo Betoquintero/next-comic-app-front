@@ -212,7 +212,6 @@ const ProfileView: React.FC<{ userData: UserData }> = ({ userData }) => {
         </div>
       </div>
 
-      {/* New buttons for DC and Marvel sections */}
       <div className="flex justify-center gap-6 mt-8">
         <button
           className="bg-blue-500 text-white rounded-lg px-6 py-3 hover:bg-blue-700 w-48"
